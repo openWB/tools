@@ -2103,7 +2103,7 @@
                 "p": "evu",
                 "pt": "flow",
                 "to": "0",
-                "tot": "str"
+                "tot": "num"
             },
             {
                 "t": "set",
