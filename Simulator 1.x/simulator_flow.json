@@ -34,6 +34,10 @@
                     {
                         "id": "291d4600.4ee55a",
                         "port": 0
+                    },
+                    {
+                        "id": "cbd657a3285c4ac1",
+                        "port": 0
                     }
                 ]
             }
@@ -92,7 +96,8 @@
         "y": 380,
         "wires": [
             [
-                "4a74669e.a8d418"
+                "4a74669e.a8d418",
+                "cbd657a3285c4ac1"
             ]
         ]
     },
@@ -463,6 +468,23 @@
         ]
     },
     {
+        "id": "cbd657a3285c4ac1",
+        "type": "function",
+        "z": "9170cbc1.d91068",
+        "name": "",
+        "func": "evuCurrents = [0,0,0];\n\nevuCurrents[0] = msg.payload/230/3;\nevuCurrents[1] = msg.payload/230/3;\nevuCurrents[2] = msg.payload/230/3;\n\nevuMsg = {\n    \"topic\": \"/pv/1/A\",\n    \"payload\": evuCurrents\n}\nreturn evuMsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 960,
+        "y": 320,
+        "wires": [
+            []
+        ]
+    },
+    {
         "id": "c08766e3.967038",
         "type": "subflow",
         "name": "Sub BAT 1.9",
@@ -496,6 +518,10 @@
                 "wires": [
                     {
                         "id": "bb6de6be.6420c8",
+                        "port": 0
+                    },
+                    {
+                        "id": "9db5dcce3b59644b",
                         "port": 0
                     }
                 ]
@@ -1290,7 +1316,8 @@
         "y": 560,
         "wires": [
             [
-                "d889b9d1.808d38"
+                "d889b9d1.808d38",
+                "9db5dcce3b59644b"
             ]
         ]
     },
@@ -1306,6 +1333,23 @@
         "finalize": "",
         "x": 1000,
         "y": 720,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9db5dcce3b59644b",
+        "type": "function",
+        "z": "c08766e3.967038",
+        "name": "",
+        "func": "evuCurrents = [0,0,0];\n\nevuCurrents[0] = msg.payload/230/3;\nevuCurrents[1] = msg.payload/230/3;\nevuCurrents[2] = msg.payload/230/3;\n\nevuMsg = {\n    \"topic\": \"/houseBattery/A\",\n    \"payload\": evuCurrents\n}\nreturn evuMsg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1150,
+        "y": 500,
         "wires": [
             []
         ]
@@ -1340,7 +1384,7 @@
             },
             {
                 "x": 1420,
-                "y": 680,
+                "y": 820,
                 "wires": [
                     {
                         "id": "6b84c2bb.5896ac",
@@ -1380,7 +1424,7 @@
         "payload": "",
         "payloadType": "date",
         "x": 150,
-        "y": 620,
+        "y": 760,
         "wires": [
             [
                 "6ebb733a.ba435c"
@@ -1397,7 +1441,7 @@
         "inte": "false",
         "property": "payload",
         "x": 340,
-        "y": 620,
+        "y": 760,
         "wires": [
             [
                 "87f31c05.e63b"
@@ -1416,7 +1460,7 @@
         "mult": "single",
         "reduce": false,
         "x": 520,
-        "y": 620,
+        "y": 760,
         "wires": [
             [
                 "9e2efeef.2f9ba"
@@ -1442,6 +1486,13 @@
                 "pt": "msg",
                 "to": "hausverbrauch",
                 "tot": "flow"
+            },
+            {
+                "t": "set",
+                "p": "stromHaus",
+                "pt": "flow",
+                "to": "$flowContext(\"hausverbrauch\")/230/3",
+                "tot": "jsonata"
             }
         ],
         "action": "",
@@ -1450,7 +1501,7 @@
         "to": "",
         "reg": false,
         "x": 820,
-        "y": 620,
+        "y": 760,
         "wires": [
             [
                 "9c3ecb0c.2a0b88"
@@ -1468,7 +1519,7 @@
         "initialize": "",
         "finalize": "",
         "x": 620,
-        "y": 680,
+        "y": 820,
         "wires": [
             [
                 "6b84c2bb.5896ac"
@@ -1498,7 +1549,7 @@
         "repair": false,
         "outputs": 2,
         "x": 950,
-        "y": 740,
+        "y": 880,
         "wires": [
             [
                 "9dcbd7eb.36ded8"
@@ -1535,7 +1586,7 @@
         "to": "",
         "reg": false,
         "x": 820,
-        "y": 680,
+        "y": 820,
         "wires": [
             [
                 "a91994d0.e13978"
@@ -1564,7 +1615,7 @@
         "repeatTimeout": false,
         "name": "Zeit zwischen den Nachrichten messen",
         "x": 440,
-        "y": 740,
+        "y": 880,
         "wires": [
             [
                 "c1b82206.8871f"
@@ -1592,7 +1643,7 @@
         "to": "",
         "reg": false,
         "x": 740,
-        "y": 740,
+        "y": 880,
         "wires": [
             [
                 "aad81f51.e57f1"
@@ -1627,7 +1678,7 @@
         "to": "",
         "reg": false,
         "x": 1210,
-        "y": 720,
+        "y": 860,
         "wires": [
             []
         ]
@@ -1659,7 +1710,7 @@
         "to": "",
         "reg": false,
         "x": 1200,
-        "y": 760,
+        "y": 900,
         "wires": [
             []
         ]
@@ -1683,11 +1734,12 @@
         "type": "function",
         "z": "e383a670.604ad8",
         "name": "Senden der Flow-Daten",
-        "func": "actualPower = parseInt(flow.get(\"evu\").toFixed(0));\nactualPowerkW = actualPower / 1000;\n\nstatusColor = \"green\";\nstatusShape = \"dot\";\nif(actualPower > 0)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/evu/WhImported\",\n            payload: parseFloat(flow.get(\"WhImported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/evu/WhExported\",\n            payload: parseFloat(flow.get(\"WhExported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/evu/W\",\n            payload: parseInt(flow.get(\"evu\").toFixed(0))\n        }\n    ]\n]",
+        "func": "actualPower = parseInt(flow.get(\"evu\").toFixed(0));\nactualPowerkW = actualPower / 1000;\n\ncurrentsLp1 = flow.get(\"stromLP1\");\ncurrentsLp2 = flow.get(\"stromLP2\");\ncurrentsLp3 = flow.get(\"stromLP3\");\ncurrentsPv  = flow.get(\"stromPv\");\ncurrentsBat = flow.get(\"stromBat\");\ncurrentHaus = flow.get(\"stromHaus\");\n\nactualCurrents = [0,0,0];\nactualCurrents[0] = currentsLp1[0] + currentsLp2[0] + currentsLp3[0] + currentsPv[0] + currentsBat[0] + currentHaus;\nactualCurrents[1] = currentsLp1[1] + currentsLp2[1] + currentsLp3[1] + currentsPv[1] + currentsBat[1] + currentHaus;\nactualCurrents[2] = currentsLp1[2] + currentsLp2[2] + currentsLp3[2] + currentsPv[2] + currentsBat[2] + currentHaus;\n\nstatusColor = \"green\";\nstatusShape = \"dot\";\nif(actualPower > 0)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/evu/WhImported\",\n            payload: parseFloat(flow.get(\"WhImported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/evu/WhExported\",\n            payload: parseFloat(flow.get(\"WhExported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/evu/W\",\n            payload: parseInt(flow.get(\"evu\").toFixed(0))\n        },\n        {\n            topic: \"openWB/set/evu/APhase1\",\n            payload: actualCurrents[0]\n        },\n        {\n            topic: \"openWB/set/evu/APhase2\",\n            payload: actualCurrents[1]\n        },\n        {\n            topic: \"openWB/set/evu/APhase3\",\n            payload: actualCurrents[2]\n        }\n    ]\n]",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
+        "libs": [],
         "x": 380,
         "y": 40,
         "wires": [
@@ -1862,11 +1914,41 @@
                 "v": "\\/house[Bb]attery\\/W",
                 "vt": "str",
                 "case": false
+            },
+            {
+                "t": "regex",
+                "v": "\\/lp\\/1\\/A$",
+                "vt": "str",
+                "case": false
+            },
+            {
+                "t": "regex",
+                "v": "\\/lp\\/2\\/A$",
+                "vt": "str",
+                "case": false
+            },
+            {
+                "t": "regex",
+                "v": "\\/lp\\/3\\/A$",
+                "vt": "str",
+                "case": false
+            },
+            {
+                "t": "regex",
+                "v": "\\/house[Bb]attery\\/A$",
+                "vt": "str",
+                "case": false
+            },
+            {
+                "t": "regex",
+                "v": "\\/pv\\/1\\/A$",
+                "vt": "str",
+                "case": false
             }
         ],
         "checkall": "true",
         "repair": false,
-        "outputs": 6,
+        "outputs": 11,
         "x": 210,
         "y": 200,
         "wires": [
@@ -1887,6 +1969,21 @@
             ],
             [
                 "3029cfb6.12ad8"
+            ],
+            [
+                "d810fa47cf9751f7"
+            ],
+            [
+                "60e5ea95e19c25ef"
+            ],
+            [
+                "24e3ba2ead322192"
+            ],
+            [
+                "e64c6b2f7d25aa08"
+            ],
+            [
+                "79c590dfe707c713"
             ]
         ],
         "outputLabels": [
@@ -1895,7 +1992,12 @@
             "Ladepunkt 2",
             "Ladepunkt 3",
             "PV 1",
-            "Speicher"
+            "Speicher",
+            "",
+            "",
+            "",
+            "",
+            null
         ]
     },
     {
@@ -1916,7 +2018,7 @@
         "payload": "0",
         "payloadType": "num",
         "x": 130,
-        "y": 440,
+        "y": 580,
         "wires": [
             [
                 "52f067f9.ad0db8",
@@ -1945,7 +2047,7 @@
         "to": "",
         "reg": false,
         "x": 630,
-        "y": 440,
+        "y": 580,
         "wires": [
             []
         ]
@@ -1966,7 +2068,7 @@
         "repair": false,
         "outputs": 1,
         "x": 340,
-        "y": 440,
+        "y": 580,
         "wires": [
             [
                 "daab6b04.308068"
@@ -1989,7 +2091,7 @@
         "repair": false,
         "outputs": 1,
         "x": 360,
-        "y": 480,
+        "y": 620,
         "wires": [
             [
                 "a8eba1a.5773e6"
@@ -2016,7 +2118,7 @@
         "to": "",
         "reg": false,
         "x": 650,
-        "y": 480,
+        "y": 620,
         "wires": [
             []
         ]
@@ -2140,6 +2242,131 @@
         "to": "",
         "reg": false,
         "x": 320,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d810fa47cf9751f7",
+        "type": "change",
+        "z": "e383a670.604ad8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stromLP1",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "60e5ea95e19c25ef",
+        "type": "change",
+        "z": "e383a670.604ad8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stromLP2",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 400,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "24e3ba2ead322192",
+        "type": "change",
+        "z": "e383a670.604ad8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stromLP3",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 440,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e64c6b2f7d25aa08",
+        "type": "change",
+        "z": "e383a670.604ad8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stromBat",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
+        "y": 480,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "79c590dfe707c713",
+        "type": "change",
+        "z": "e383a670.604ad8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "stromPv",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 430,
         "y": 520,
         "wires": [
             []
@@ -2179,6 +2406,10 @@
                 "wires": [
                     {
                         "id": "34ab2f0e.1bfe6",
+                        "port": 0
+                    },
+                    {
+                        "id": "2671440e7b3ab81b",
                         "port": 0
                     }
                 ]
@@ -2852,16 +3083,20 @@
         "type": "function",
         "z": "e79099a7.6c4608",
         "name": "",
-        "func": "phasesInUse = flow.get(\"Lp_Phasen\");\nlpNumber = env.get(\"LPNumber\");\n\nphaseCurrents = [0,0,0];\n\nswitch (lpNumber) {\n    case 1:\n        phaseCurrents[0] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[1] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[2] = msg.payload;\n        break;\n    case 2:\n        phaseCurrents[1] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[2] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[0] = msg.payload;\n        break;\n    case 3:\n        phaseCurrents[2] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[0] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[1] = msg.payload;\n        break;\n}\n\nflow.set(\"Lp_Strom1\", phaseCurrents[0]);\nflow.set(\"Lp_Strom2\", phaseCurrents[1]);\nflow.set(\"Lp_Strom3\", phaseCurrents[2]);\n\nreturn msg;\n",
-        "outputs": 1,
+        "func": "phasesInUse = flow.get(\"Lp_Phasen\");\nlpNumber = env.get(\"LPNumber\");\n\nphaseCurrents = [0,0,0];\nevuCurrents = [0,0,0];\n\nphaseCurrents[0] = msg.payload;\nif( phasesInUse > 1 )\n    phaseCurrents[1] = msg.payload;\nif( phasesInUse > 2 )\n    phaseCurrents[2] = msg.payload;\n\nswitch (lpNumber) {\n    case 1:\n        evuCurrents = phaseCurrents;\n        break;\n    case 2:\n        evuCurrents[0] = phaseCurrents[1];\n        evuCurrents[1] = phaseCurrents[2];\n        evuCurrents[2] = phaseCurrents[0];\n    break;\n    case 3:\n        evuCurrents[0] = phaseCurrents[2];\n        evuCurrents[1] = phaseCurrents[0];\n        evuCurrents[2] = phaseCurrents[1];\n        break;\n}\n\nflow.set(\"Lp_Strom1\", phaseCurrents[0]);\nflow.set(\"Lp_Strom2\", phaseCurrents[1]);\nflow.set(\"Lp_Strom3\", phaseCurrents[2]);\n\nevuMsg = {\n    \"topic\": \"/lp/#/A\",\n    \"payload\": evuCurrents\n}\nreturn [\n    [msg],\n    [evuMsg]\n];\n",
+        "outputs": 2,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
+        "libs": [],
         "x": 740,
         "y": 540,
         "wires": [
             [
                 "81a372ad.cdb6e"
+            ],
+            [
+                "2671440e7b3ab81b"
             ]
         ]
     },
@@ -3038,6 +3273,33 @@
         "reg": false,
         "x": 380,
         "y": 380,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2671440e7b3ab81b",
+        "type": "change",
+        "z": "e79099a7.6c4608",
+        "name": "",
+        "rules": [
+            {
+                "t": "change",
+                "p": "topic",
+                "pt": "msg",
+                "from": "#",
+                "fromt": "str",
+                "to": "LPNumber",
+                "tot": "env"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 970,
+        "y": 540,
         "wires": [
             []
         ]
