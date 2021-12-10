@@ -1993,11 +1993,11 @@
             "Ladepunkt 3",
             "PV 1",
             "Speicher",
-            "",
-            "",
-            "",
-            "",
-            null
+            "Ladepunkt 1 Strom",
+            "Ladepunkt 2 Strom",
+            "Ladepunkt 3 Strom",
+            "Speicher Strom",
+            "PV 1 Strom"
         ]
     },
     {
