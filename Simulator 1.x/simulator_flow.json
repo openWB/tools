@@ -5242,7 +5242,7 @@
         "label": "kW",
         "format": "{{value/1000 | number:2}}",
         "min": 0,
-        "max": "-10000",
+        "max": "10000",
         "colors": [
             "#00b500",
             "#00ff00",
