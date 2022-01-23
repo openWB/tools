@@ -282,7 +282,7 @@
         "type": "function",
         "z": "9170cbc1.d91068",
         "name": "Senden der Flow-Daten",
-        "func": "actualPower = parseInt(flow.get(\"pv\").toFixed(0));\nactualPowerkW = actualPower / 1000;\n\nstatusColor = \"green\";\nstatusShape = \"dot\";\nif(actualPower > -100)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW\"\n    });\n\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/pv/1/W\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/pv/1/WhCounter\",\n            payload: parseInt(flow.get(\"PV_Zähler\").toFixed(0))\n        }\n    ]\n]",
+        "func": "actualPower = parseInt(flow.get(\"pv\").toFixed(0));\nactualPowerkW = actualPower / 1000;\n\nstatusColor = \"green\";\nstatusShape = \"dot\";\nif(actualPower > -100)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW\"\n    });\n\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/pv/1/W\",\n            payload: - actualPower\n        },\n        {\n            topic: \"openWB/set/pv/1/WhCounter\",\n            payload: parseInt(flow.get(\"PV_Zähler\").toFixed(0))\n        }\n    ]\n]",
         "outputs": 1,
         "noerr": 0,
         "initialize": "// Code added here will be run once\n// whenever the node is deployed.\nnode.status({\n        fill: \"yellow\",\n        shape: \"ring\",\n        text: \"starting...\"\n    });\n",
