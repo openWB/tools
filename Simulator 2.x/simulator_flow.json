@@ -1,0 +1,7111 @@
+[
+	{
+		"id": "c5821ca1.ee2da",
+		"type": "subflow",
+		"name": "Sub PV 2.0",
+		"info": "",
+		"category": "",
+		"in": [
+			{
+				"x": 60,
+				"y": 140,
+				"wires": [
+					{
+						"id": "c9a13be.fe492c8"
+					}
+				]
+			}
+		],
+		"out": [
+			{
+				"x": 540,
+				"y": 40,
+				"wires": [
+					{
+						"id": "cb144244.8df92",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1160,
+				"y": 380,
+				"wires": [
+					{
+						"id": "180041c4.08fc2e",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1140,
+				"y": 40,
+				"wires": [
+					{
+						"id": "fdaf3909e1383774",
+						"port": 0
+					}
+				]
+			}
+		],
+		"env": [
+			{
+				"name": "Component-ID",
+				"type": "num",
+				"value": "1"
+			}
+		],
+		"meta": {},
+		"color": "#DDAA99",
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			"Debug"
+		],
+		"status": {
+			"x": 820,
+			"y": 40,
+			"wires": [
+				{
+					"id": "b8b748bb.7b2148",
+					"port": 0
+				}
+			]
+		}
+	},
+	{
+		"id": "180041c4.08fc2e",
+		"type": "change",
+		"z": "c5821ca1.ee2da",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "pv",
+				"pt": "flow",
+				"to": "$min([(payload+$flowContext(\"PVNorm\"))*-1,0])",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "pv",
+				"tot": "flow"
+			},
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "/pv/W",
+				"tot": "str"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 760,
+		"y": 380,
+		"wires": [
+			[
+				"762b7362.1cab7c"
+			]
+		]
+	},
+	{
+		"id": "2e0d1128.5eb14e",
+		"type": "smooth",
+		"z": "c5821ca1.ee2da",
+		"name": "",
+		"property": "payload",
+		"action": "mean",
+		"count": "10",
+		"round": "1",
+		"mult": "single",
+		"reduce": false,
+		"x": 560,
+		"y": 380,
+		"wires": [
+			[
+				"180041c4.08fc2e"
+			]
+		]
+	},
+	{
+		"id": "6506b2a6.b2ebdc",
+		"type": "random",
+		"z": "c5821ca1.ee2da",
+		"name": "+/- 100W",
+		"low": "-100",
+		"high": "100",
+		"inte": "false",
+		"property": "payload",
+		"x": 360,
+		"y": 380,
+		"wires": [
+			[
+				"2e0d1128.5eb14e"
+			]
+		]
+	},
+	{
+		"id": "27c8d022.8cc7c",
+		"type": "change",
+		"z": "c5821ca1.ee2da",
+		"name": "Energie in Wh",
+		"rules": [
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "$flowContext(\"pv\")*timeInterval/1000/3600*(-1)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 760,
+		"y": 440,
+		"wires": [
+			[
+				"27220a75.050556"
+			]
+		],
+		"info": "$number(payload)*(timeInterval/1000)/3600/1000"
+	},
+	{
+		"id": "12b3849e.717fcb",
+		"type": "inject",
+		"z": "c5821ca1.ee2da",
+		"name": "",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "2",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 150,
+		"y": 380,
+		"wires": [
+			[
+				"6506b2a6.b2ebdc"
+			]
+		]
+	},
+	{
+		"id": "27220a75.050556",
+		"type": "change",
+		"z": "c5821ca1.ee2da",
+		"name": "Zähler aktualisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "PV_Zähler",
+				"pt": "flow",
+				"to": "payload+$flowContext(\"PV_Zähler\")",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "PV_Zähler",
+				"tot": "flow"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 970,
+		"y": 440,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "f2680f1d.7414d",
+		"type": "inject",
+		"z": "c5821ca1.ee2da",
+		"name": "Publish Trigger",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "10",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 140,
+		"y": 40,
+		"wires": [
+			[
+				"cb144244.8df92"
+			]
+		]
+	},
+	{
+		"id": "cb144244.8df92",
+		"type": "function",
+		"z": "c5821ca1.ee2da",
+		"name": "Senden der Flow-Daten",
+		"func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"pv\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\n\nvar statusColor = \"green\";\nvar statusShape = \"dot\";\nif(actualPower > -100)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/pv/\" + ComponentId + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/pv/\" + ComponentId + \"/get/counter\",\n            payload: parseInt(flow.get(\"PV_Zähler\").toFixed(0))\n        }\n    ]\n]",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "// Code added here will be run once\n// whenever the node is deployed.\nnode.status({\n        fill: \"yellow\",\n        shape: \"ring\",\n        text: \"starting...\"\n    });\n",
+		"finalize": "",
+		"libs": [],
+		"x": 370,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "b8b748bb.7b2148",
+		"type": "status",
+		"z": "c5821ca1.ee2da",
+		"name": "",
+		"scope": [
+			"cb144244.8df92"
+		],
+		"x": 700,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "c9a13be.fe492c8",
+		"type": "switch",
+		"z": "c5821ca1.ee2da",
+		"name": "Split Topics",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/W$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 1,
+		"x": 210,
+		"y": 140,
+		"wires": [
+			[
+				"25a41bf5.5cb904"
+			]
+		],
+		"outputLabels": [
+			"Soll-Leistung"
+		]
+	},
+	{
+		"id": "25a41bf5.5cb904",
+		"type": "change",
+		"z": "c5821ca1.ee2da",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "PVNorm",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 430,
+		"y": 140,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "7135e239.69cd8c",
+		"type": "inject",
+		"z": "c5821ca1.ee2da",
+		"name": "",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": 0.1,
+		"topic": "",
+		"payload": "0",
+		"payloadType": "num",
+		"x": 130,
+		"y": 240,
+		"wires": [
+			[
+				"78037fbd.010fc",
+				"c7862a5e.6a3e28"
+			]
+		]
+	},
+	{
+		"id": "a0ab0f47.d1e2b",
+		"type": "change",
+		"z": "c5821ca1.ee2da",
+		"name": "Zähler initialisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "PV_Zähler",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 550,
+		"y": 240,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "78037fbd.010fc",
+		"type": "switch",
+		"z": "c5821ca1.ee2da",
+		"name": "Zähler gesetzt?",
+		"property": "PV_Zähler",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "null"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 1,
+		"x": 340,
+		"y": 240,
+		"wires": [
+			[
+				"a0ab0f47.d1e2b"
+			]
+		]
+	},
+	{
+		"id": "c7862a5e.6a3e28",
+		"type": "change",
+		"z": "c5821ca1.ee2da",
+		"name": "Init flow context",
+		"rules": [
+			{
+				"t": "set",
+				"p": "pv",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "PVNorm",
+				"pt": "flow",
+				"to": "1500",
+				"tot": "num"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 340,
+		"y": 280,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "762b7362.1cab7c",
+		"type": "interval-length",
+		"z": "c5821ca1.ee2da",
+		"format": "mills",
+		"bytopic": false,
+		"minimum": "",
+		"maximum": "",
+		"window": "",
+		"timeout": false,
+		"msgTimeout": "",
+		"minimumunit": "msecs",
+		"maximumunit": "msecs",
+		"windowunit": "msecs",
+		"msgTimeoutUnit": "msecs",
+		"reset": false,
+		"startup": false,
+		"msgField": "timeInterval",
+		"timestampField": "previousTimestamp",
+		"repeatTimeout": false,
+		"name": "Zeit zwischen den Nachrichten messen",
+		"x": 460,
+		"y": 440,
+		"wires": [
+			[
+				"27c8d022.8cc7c"
+			],
+			[]
+		]
+	},
+	{
+		"id": "fdaf3909e1383774",
+		"type": "inject",
+		"z": "c5821ca1.ee2da",
+		"name": "Debug",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "10",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "debug",
+		"payload": "{\t    \"power\": $flowContext(\"pv\"),\t    \"power_norm\": $flowContext(\"PVNorm\"),\t    \"counter\": $flowContext(\"PV_Zähler\")\t}",
+		"payloadType": "jsonata",
+		"x": 1020,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "2dd5cf5c.4ae26",
+		"type": "subflow",
+		"name": "Sub BAT 2.0",
+		"info": "",
+		"category": "",
+		"in": [
+			{
+				"x": 40,
+				"y": 200,
+				"wires": [
+					{
+						"id": "e46c92f3.d21a9"
+					}
+				]
+			}
+		],
+		"out": [
+			{
+				"x": 540,
+				"y": 40,
+				"wires": [
+					{
+						"id": "28e0a4ab.758cfc",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1360,
+				"y": 560,
+				"wires": [
+					{
+						"id": "2e89309f.ba832",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1120,
+				"y": 900,
+				"wires": [
+					{
+						"id": "dec3f627.a2d958",
+						"port": 0
+					},
+					{
+						"id": "3ef4b7a7.942b78",
+						"port": 0
+					},
+					{
+						"id": "9079ffaf.4a096",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1180,
+				"y": 40,
+				"wires": [
+					{
+						"id": "a6823773fb1192f8",
+						"port": 0
+					}
+				]
+			}
+		],
+		"env": [
+			{
+				"name": "Component-ID",
+				"type": "str",
+				"value": "2"
+			}
+		],
+		"meta": {},
+		"color": "#DDAA99",
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			"Chart",
+			"Debug"
+		],
+		"status": {
+			"x": 880,
+			"y": 40,
+			"wires": [
+				{
+					"id": "f5afed4e.b6449",
+					"port": 0
+				}
+			]
+		}
+	},
+	{
+		"id": "fa698281.c98db",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "maxPower",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 460,
+		"y": 180,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "24d6c753.7611c8",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "maxCapacity",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 470,
+		"y": 220,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "20f9c373.a12e3c",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "evu",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 440,
+		"y": 260,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "e46c92f3.d21a9",
+		"type": "switch",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Split Topics",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/soc",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/BatMaxPower",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/BatCapacity",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/evu/W$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 230,
+		"y": 200,
+		"wires": [
+			[
+				"84fa4a81.59f898"
+			],
+			[
+				"fa698281.c98db"
+			],
+			[
+				"24d6c753.7611c8"
+			],
+			[
+				"20f9c373.a12e3c"
+			]
+		],
+		"outputLabels": [
+			"SoC",
+			"Max. Power",
+			"Kapazität",
+			"EVU"
+		]
+	},
+	{
+		"id": "84fa4a81.59f898",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "actualCapacity",
+				"pt": "flow",
+				"to": "(payload/100)*$flowContext(\"maxCapacity\")\t",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 470,
+		"y": 140,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "f5afed4e.b6449",
+		"type": "status",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"scope": [
+			"28e0a4ab.758cfc"
+		],
+		"x": 720,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "28e0a4ab.758cfc",
+		"type": "function",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Senden der Flow-Daten",
+		"func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"bat\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\n\nconst maxCapacity = flow.get(\"maxCapacity\");\nconst actualCapacity = flow.get(\"actualCapacity\");\nvar actualSoc = actualCapacity / maxCapacity * 100;\nactualSoc = parseInt(actualSoc.toFixed(0));\n\nvar statusColor = \"yellow\";\nvar statusShape = \"ring\";\nif(actualPower < 0)\n    statusColor = \"red\";\nif(actualPower > 0)\n    statusColor = \"green\";\nif(actualSoc > 0)\n    statusShape = \"dot\";\n\nnode.status({\n        fill:  statusColor,\n        shape: statusShape,\n        text:  actualPowerkW.toFixed(1)+\"kW \" + actualSoc + \"%\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/bat/\" + ComponentId + \"/get/imported\",\n            payload: parseFloat(flow.get(\"WhImported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/bat/\" + ComponentId + \"/get/exported\",\n            payload: parseFloat(flow.get(\"WhExported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/bat/\" + ComponentId + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/bat/\" + ComponentId + \"/get/soc\",\n            payload: actualSoc\n        }\n    ]\n]",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 370,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "4b72ed2d.3021d4",
+		"type": "inject",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Publish Trigger",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "10",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 130,
+		"y": 40,
+		"wires": [
+			[
+				"28e0a4ab.758cfc"
+			]
+		]
+	},
+	{
+		"id": "78c63bc8.9860b4",
+		"type": "inject",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": 0.1,
+		"topic": "",
+		"payload": "0",
+		"payloadType": "num",
+		"x": 130,
+		"y": 380,
+		"wires": [
+			[
+				"13d7d661.97e00a",
+				"778f747e.c1b43c",
+				"b274f2af.4b00a"
+			]
+		]
+	},
+	{
+		"id": "5b44278d.e38d58",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Zähler Bezug initialisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "WhImported",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 630,
+		"y": 380,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "13d7d661.97e00a",
+		"type": "switch",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Zähler Bezug gesetzt?",
+		"property": "WhImported",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "null"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 1,
+		"x": 340,
+		"y": 380,
+		"wires": [
+			[
+				"5b44278d.e38d58"
+			]
+		]
+	},
+	{
+		"id": "778f747e.c1b43c",
+		"type": "switch",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Zähler Einspeisung gesetzt?",
+		"property": "WhExported",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "null"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 1,
+		"x": 360,
+		"y": 420,
+		"wires": [
+			[
+				"c5700f42.8bcec"
+			]
+		]
+	},
+	{
+		"id": "c5700f42.8bcec",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Zähler Einspeisung initialisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "WhExported",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 650,
+		"y": 420,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "b274f2af.4b00a",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Init flow context",
+		"rules": [
+			{
+				"t": "set",
+				"p": "bat",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "evu",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "maxPower",
+				"pt": "flow",
+				"to": "3300",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "maxCapacity",
+				"pt": "flow",
+				"to": "5000",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "actualCapacity",
+				"pt": "flow",
+				"to": "2500",
+				"tot": "num"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 320,
+		"y": 460,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "dec3f627.a2d958",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "EVU",
+				"tot": "str"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 920,
+		"y": 840,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "3ef4b7a7.942b78",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "BAT",
+				"tot": "str"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 920,
+		"y": 880,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "bef0a1f8.2e2cf",
+		"type": "inject",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Clear chart on deploy",
+		"props": [
+			{
+				"p": "payload",
+				"v": "{\"data\":[]}",
+				"vt": "json"
+			},
+			{
+				"p": "topic",
+				"v": "",
+				"vt": "string"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"topic": "",
+		"payload": "{\"data\":[]}",
+		"payloadType": "json",
+		"x": 680,
+		"y": 960,
+		"wires": [
+			[
+				"9079ffaf.4a096"
+			]
+		]
+	},
+	{
+		"id": "9079ffaf.4a096",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"rules": [
+			{
+				"t": "move",
+				"p": "payload.data",
+				"pt": "msg",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 916,
+		"y": 960,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "167235f4.d859ea",
+		"type": "function",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Map to Power Range",
+		"func": "const range = flow.get(\"maxPower\");\nconst actualCapacity = flow.get(\"actualCapacity\");\nconst maxCapacity = flow.get(\"maxCapacity\");\n\nmsg.payload = msg.payload * (2*range) - range;\nif( actualCapacity == 0 ){\n    msg.payload = Math.max(msg.payload,0);\n} else if( actualCapacity == maxCapacity ){\n    msg.payload = Math.min(msg.payload,0);\n}\nreturn msg;",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 620,
+		"y": 560,
+		"wires": [
+			[
+				"3ef4b7a7.942b78",
+				"2e89309f.ba832"
+			]
+		]
+	},
+	{
+		"id": "a6d6bae9.e7d3f8",
+		"type": "inject",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "2",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "",
+		"payload": "evu",
+		"payloadType": "flow",
+		"x": 140,
+		"y": 560,
+		"wires": [
+			[
+				"dec3f627.a2d958",
+				"9ef887dd.50864"
+			]
+		]
+	},
+	{
+		"id": "dc6bbb24.2c42a8",
+		"type": "switch",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"property": "bat",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "lt",
+				"v": "0",
+				"vt": "str"
+			},
+			{
+				"t": "gte",
+				"v": "0",
+				"vt": "str"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 2,
+		"x": 910,
+		"y": 640,
+		"wires": [
+			[
+				"3c54d06e.c5af5"
+			],
+			[
+				"23f1985b.8c78b8"
+			]
+		]
+	},
+	{
+		"id": "32fd7a43.8ae456",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Energie in Wh",
+		"rules": [
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "timeInterval/1000/3600*$flowContext(\"bat\")",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 740,
+		"y": 640,
+		"wires": [
+			[
+				"dc6bbb24.2c42a8",
+				"a4d0b51c.aa13c8"
+			]
+		],
+		"info": "$number(payload)*(timeInterval/1000)/3600/1000"
+	},
+	{
+		"id": "3c54d06e.c5af5",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Zähler Einspeisung aktualisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "WhExported",
+				"pt": "flow",
+				"to": "payload*(-1)+$flowContext(\"WhExported\")",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "WhExported",
+				"tot": "flow"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1150,
+		"y": 620,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "23f1985b.8c78b8",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Zähler Bezug aktualisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "WhImported",
+				"pt": "flow",
+				"to": "payload+$flowContext(\"WhImported\")",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "WhImported",
+				"tot": "flow"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1140,
+		"y": 660,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "2e89309f.ba832",
+		"type": "change",
+		"z": "2dd5cf5c.4ae26",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "/houseBattery/W",
+				"tot": "str"
+			},
+			{
+				"t": "set",
+				"p": "bat",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 940,
+		"y": 560,
+		"wires": [
+			[
+				"73fdf2f2.666c1c"
+			]
+		]
+	},
+	{
+		"id": "a4d0b51c.aa13c8",
+		"type": "function",
+		"z": "2dd5cf5c.4ae26",
+		"name": "actualCapacity aktualisieren (SoC)",
+		"func": "var actualCapacity = flow.get(\"actualCapacity\");\nconst maxCapacity = flow.get(\"maxCapacity\");\n\nactualCapacity = Math.min(\n    Math.max(\n        actualCapacity + msg.payload,\n        0\n        ),\n        maxCapacity\n    );\n\nflow.set(\"actualCapacity\", actualCapacity);\nmsg.payload = actualCapacity;\n\nreturn msg;",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 1000,
+		"y": 720,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "9ef887dd.50864",
+		"type": "PID",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Leistungsregelung",
+		"setpoint": "0",
+		"pb": "11000",
+		"ti": "6",
+		"td": 0,
+		"integral_default": 0.5,
+		"smooth_factor": "0",
+		"max_interval": "10",
+		"enable": 1,
+		"disabled_op": "0,5",
+		"x": 370,
+		"y": 560,
+		"wires": [
+			[
+				"167235f4.d859ea"
+			]
+		]
+	},
+	{
+		"id": "73fdf2f2.666c1c",
+		"type": "interval-length",
+		"z": "2dd5cf5c.4ae26",
+		"format": "mills",
+		"bytopic": false,
+		"minimum": "",
+		"maximum": "",
+		"window": "",
+		"timeout": false,
+		"msgTimeout": "",
+		"minimumunit": "msecs",
+		"maximumunit": "msecs",
+		"windowunit": "msecs",
+		"msgTimeoutUnit": "msecs",
+		"reset": false,
+		"startup": false,
+		"msgField": "timeInterval",
+		"timestampField": "previousTimestamp",
+		"repeatTimeout": false,
+		"name": "Zeit zwischen den Nachrichten messen",
+		"x": 440,
+		"y": 640,
+		"wires": [
+			[
+				"32fd7a43.8ae456"
+			],
+			[]
+		]
+	},
+	{
+		"id": "a6823773fb1192f8",
+		"type": "inject",
+		"z": "2dd5cf5c.4ae26",
+		"name": "Debug",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "10",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "debug",
+		"payload": "{\t   \"power\": $flowContext(\"bat\"),\t   \"max_power\": $flowContext(\"maxPower\"),\t   \"evu_power\": $flowContext(\"evu\"),\t   \"actual_capacity\": $flowContext(\"actualCapacity\"),\t   \"max_capacity\": $flowContext(\"maxCapacity\"),\t   \"counter_import\": $flowContext(\"WhImported\"),\t   \"counter_export\": $flowContext(\"WhExported\")\t}",
+		"payloadType": "jsonata",
+		"x": 1060,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "da060938.c8ff48",
+		"type": "subflow",
+		"name": "Sub EVU 2.0",
+		"info": "",
+		"category": "",
+		"in": [
+			{
+				"x": 40,
+				"y": 380,
+				"wires": [
+					{
+						"id": "60345bb6.1855d4"
+					}
+				]
+			}
+		],
+		"out": [
+			{
+				"x": 560,
+				"y": 40,
+				"wires": [
+					{
+						"id": "97a98e87.248e6",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1400,
+				"y": 1040,
+				"wires": [
+					{
+						"id": "f7fd464c.dac218",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1140,
+				"y": 40,
+				"wires": [
+					{
+						"id": "c1f27145620a046e",
+						"port": 0
+					}
+				]
+			}
+		],
+		"env": [
+			{
+				"name": "Component-ID",
+				"type": "num",
+				"value": "0"
+			}
+		],
+		"meta": {},
+		"color": "#DDAA99",
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			"Debug",
+			"Dashboard"
+		],
+		"status": {
+			"x": 850,
+			"y": 40,
+			"wires": [
+				{
+					"id": "8d39538d.a5c0b",
+					"port": 0
+				}
+			]
+		}
+	},
+	{
+		"id": "a14ffb7.da27208",
+		"type": "inject",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "2",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "2",
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 130,
+		"y": 980,
+		"wires": [
+			[
+				"2eb2b9d4.130976"
+			]
+		]
+	},
+	{
+		"id": "2eb2b9d4.130976",
+		"type": "random",
+		"z": "da060938.c8ff48",
+		"name": "+/- 50 W",
+		"low": "-50",
+		"high": "50",
+		"inte": "false",
+		"property": "payload",
+		"x": 320,
+		"y": 980,
+		"wires": [
+			[
+				"43f0c42.2e71e3c"
+			]
+		]
+	},
+	{
+		"id": "43f0c42.2e71e3c",
+		"type": "smooth",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"property": "payload",
+		"action": "mean",
+		"count": "10",
+		"round": "1",
+		"mult": "single",
+		"reduce": false,
+		"x": 500,
+		"y": 980,
+		"wires": [
+			[
+				"80f26b21aa9b6cca"
+			]
+		]
+	},
+	{
+		"id": "3ba0e67b.44155a",
+		"type": "function",
+		"z": "da060938.c8ff48",
+		"name": "Summe",
+		"func": "node.status({\n        text: flow.get(\"leistungLP1\")+\"/\"+flow.get(\"leistungLP2\")+\"/\"+flow.get(\"leistungLP3\")+\"/\"+flow.get(\"hausverbrauch\")+\"/\"+flow.get(\"pv\")+\"/\"+flow.get(\"bat\")\n    });\n\n\nmsg.payload =  flow.get(\"leistungLP1\") + flow.get(\"leistungLP2\") + flow.get(\"leistungLP3\") + flow.get(\"hausverbrauch\") + flow.get(\"pv\") + flow.get(\"bat\")\nreturn msg;",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 600,
+		"y": 1040,
+		"wires": [
+			[
+				"f7fd464c.dac218"
+			]
+		]
+	},
+	{
+		"id": "9e71bf31.d0c6d",
+		"type": "switch",
+		"z": "da060938.c8ff48",
+		"name": "Einspeisung/Bezug",
+		"property": "evu",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "lt",
+				"v": "0",
+				"vt": "str"
+			},
+			{
+				"t": "gte",
+				"v": "0",
+				"vt": "str"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 2,
+		"x": 930,
+		"y": 1140,
+		"wires": [
+			[
+				"5381aca8.785c94"
+			],
+			[
+				"68dda824.2a1208"
+			]
+		]
+	},
+	{
+		"id": "f7fd464c.dac218",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "evu",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			},
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "/evu/W",
+				"tot": "str"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 800,
+		"y": 1040,
+		"wires": [
+			[
+				"9eed1b2f.670f88"
+			]
+		]
+	},
+	{
+		"id": "2af10c7b.8279c4",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "Energie in Wh",
+		"rules": [
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "$flowContext(\"evu\")*timeInterval/1000/3600",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 720,
+		"y": 1140,
+		"wires": [
+			[
+				"9e71bf31.d0c6d"
+			]
+		],
+		"info": "$number(payload)*(timeInterval/1000)/3600/1000"
+	},
+	{
+		"id": "5381aca8.785c94",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "Zähler Einspeisung aktualisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "WhExported",
+				"pt": "flow",
+				"to": "payload*(-1)+$flowContext(\"WhExported\")",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "WhExported",
+				"tot": "flow"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1190,
+		"y": 1120,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "68dda824.2a1208",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "Zähler Bezug aktualisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "WhImported",
+				"pt": "flow",
+				"to": "payload+$flowContext(\"WhImported\")",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "WhImported",
+				"tot": "flow"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1180,
+		"y": 1160,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "8d39538d.a5c0b",
+		"type": "status",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"scope": [
+			"97a98e87.248e6"
+		],
+		"x": 740,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "97a98e87.248e6",
+		"type": "function",
+		"z": "da060938.c8ff48",
+		"name": "Senden der Flow-Daten",
+		"func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"evu\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst actualCurrent = flow.get(\"evu_current\");\n\nvar statusColor = \"green\";\nvar statusShape = \"dot\";\nif(actualPower > 0)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW, \"+flow.get(\"evu_current\")\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/imported\",\n            payload: parseFloat(flow.get(\"WhImported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/exported\",\n            payload: parseFloat(flow.get(\"WhExported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/power\",\n            payload: parseInt(flow.get(\"evu\").toFixed(0))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/currents\",\n            payload: actualCurrent\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/voltages\",\n            payload: [230,230,230]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/powers\",\n            payload: [230*actualCurrent[0], 230*actualCurrent[1], 230*actualCurrent[2]]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/power_factors\",\n            payload: [1,1,1]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/frequency\",\n            payload: parseFloat(flow.get(\"frequency\"))\n        }\n   ]\n]",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 380,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "7ccddecd.3d4f7",
+		"type": "inject",
+		"z": "da060938.c8ff48",
+		"name": "Publish Trigger",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "10",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 140,
+		"y": 40,
+		"wires": [
+			[
+				"97a98e87.248e6"
+			]
+		]
+	},
+	{
+		"id": "d4ec25e5.d87818",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "leistungLP1",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 440,
+		"y": 360,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "d02876f.be87688",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "leistungLP2",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 440,
+		"y": 460,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "15aef799.6ac4c8",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "leistungLP3",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 440,
+		"y": 560,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "1e14f60e.53005a",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "pv",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 410,
+		"y": 660,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "60345bb6.1855d4",
+		"type": "switch",
+		"z": "da060938.c8ff48",
+		"name": "Split Topics",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/Hausverbrauch_p1$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/Hausverbrauch_p2$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/Hausverbrauch_p3$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "^simulator\\/chargepoint\\/[0-9]+\\/id$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t    [\t        \"/chargepoint/\",\t        $string($flowContext(\"id_LP1\")),\t        \"/get/power_all\"\t    ]\t)",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP1\")),\t       \"/get/current_p1\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP1\")),\t       \"/get/current_p2\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP1\")),\t       \"/get/current_p3\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t    [\t        \"/chargepoint/\",\t        $string($flowContext(\"id_LP2\")),\t        \"/get/power_all\"\t    ]\t)",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP2\")),\t       \"/get/current_p1\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP2\")),\t       \"/get/current_p2\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP2\")),\t       \"/get/current_p3\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t    [\t        \"/chargepoint/\",\t        $string($flowContext(\"id_LP3\")),\t        \"/get/power_all\"\t    ]\t)",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP3\")),\t       \"/get/current_p1\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP3\")),\t       \"/get/current_p2\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "cont",
+				"v": "$join(\t   [\t       \"/chargepoint/\",\t       $string($flowContext(\"id_LP3\")),\t       \"/get/current_p3\"\t    \t   ]\t\t)\t",
+				"vt": "jsonata"
+			},
+			{
+				"t": "regex",
+				"v": "\\/house[Bb]attery\\/W",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/pv\\/W$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/frequency$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 19,
+		"x": 190,
+		"y": 380,
+		"wires": [
+			[
+				"1711441c919e2a1d"
+			],
+			[
+				"fc15ba2aeda2dbb2"
+			],
+			[
+				"a8e83e7e034910ce"
+			],
+			[
+				"ee96ba88673e1d59"
+			],
+			[
+				"d4ec25e5.d87818"
+			],
+			[
+				"aa9606e1.040c08"
+			],
+			[
+				"3491db86.1e0edc"
+			],
+			[
+				"98aedca3.6266b8"
+			],
+			[
+				"d02876f.be87688"
+			],
+			[
+				"1fe40bfd.d602cc"
+			],
+			[
+				"562388d9.7f1a9"
+			],
+			[
+				"41b8245b.5e25dc"
+			],
+			[
+				"15aef799.6ac4c8"
+			],
+			[
+				"d2263cc3.f53ef"
+			],
+			[
+				"68aeb24.1c455cc"
+			],
+			[
+				"eb955622.f1f86"
+			],
+			[
+				"e8165b40.91b4d8"
+			],
+			[
+				"1e14f60e.53005a"
+			],
+			[
+				"4d3c89efaca7be5e"
+			]
+		],
+		"outputLabels": [
+			"",
+			"",
+			"",
+			"",
+			"Ladepunkt 1",
+			"",
+			"",
+			"",
+			"Ladepunkt 2",
+			"",
+			"",
+			"",
+			"Ladepunkt 3",
+			"",
+			"",
+			"",
+			"Speicher",
+			"PV 1",
+			""
+		]
+	},
+	{
+		"id": "afb834d1.ac7628",
+		"type": "inject",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": 0.1,
+		"topic": "",
+		"payload": "0",
+		"payloadType": "num",
+		"x": 110,
+		"y": 800,
+		"wires": [
+			[
+				"a01ce865.943878",
+				"9573d411.0e2728",
+				"479952ca.b09c9c"
+			]
+		]
+	},
+	{
+		"id": "3d3ebf4b.ea013",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "Zähler Bezug initialisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "WhImported",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 610,
+		"y": 800,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "a01ce865.943878",
+		"type": "switch",
+		"z": "da060938.c8ff48",
+		"name": "Zähler Bezug gesetzt?",
+		"property": "WhImported",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "null"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 1,
+		"x": 320,
+		"y": 800,
+		"wires": [
+			[
+				"3d3ebf4b.ea013"
+			]
+		]
+	},
+	{
+		"id": "9573d411.0e2728",
+		"type": "switch",
+		"z": "da060938.c8ff48",
+		"name": "Zähler Einspeisung gesetzt?",
+		"property": "WhExported",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "null"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 1,
+		"x": 340,
+		"y": 840,
+		"wires": [
+			[
+				"76ad4288.0e1b7c"
+			]
+		]
+	},
+	{
+		"id": "76ad4288.0e1b7c",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "Zähler Einspeisung initialisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "WhExported",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 630,
+		"y": 840,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "e8165b40.91b4d8",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "bat",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 420,
+		"y": 700,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "479952ca.b09c9c",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "Init flow context",
+		"rules": [
+			{
+				"t": "set",
+				"p": "leistungLP1",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "leistungLP2",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "leistungLP3",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "evu",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "pv",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "bat",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "hausverbrauch",
+				"pt": "flow",
+				"to": "1000",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "HausverbrauchNorm",
+				"pt": "flow",
+				"to": "1000",
+				"tot": "num"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 300,
+		"y": 880,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "aa9606e1.040c08",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p1_LP1",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 460,
+		"y": 400,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "6c586f55.6462e",
+		"type": "function",
+		"z": "da060938.c8ff48",
+		"name": "Ströme",
+		"func": "const current_others = (flow.get(\"pv\") + flow.get(\"bat\")) / 230 / 3\nconst currentP1 = current_others + flow.get(\"hausverbrauch_p1\") / 230 + flow.get(\"current_p1_LP1\") + flow.get(\"current_p1_LP2\") + flow.get(\"current_p1_LP3\")\nconst currentP2 = current_others + flow.get(\"hausverbrauch_p2\") / 230 + flow.get(\"current_p2_LP1\") + flow.get(\"current_p2_LP2\") + flow.get(\"current_p2_LP3\")\nconst currentP3 = current_others + flow.get(\"hausverbrauch_p3\") / 230 + flow.get(\"current_p3_LP1\") + flow.get(\"current_p3_LP2\") + flow.get(\"current_p3_LP3\")\n\nmsg.payload = [parseFloat(currentP1.toFixed(2)), parseFloat(currentP2.toFixed(2)), parseFloat(currentP3.toFixed(2))]\nreturn msg;",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 1020,
+		"y": 980,
+		"wires": [
+			[
+				"3c97930d.404f4c"
+			]
+		]
+	},
+	{
+		"id": "3c97930d.404f4c",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "evu_current",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1230,
+		"y": 980,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "1fe40bfd.d602cc",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p1_LP2",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 460,
+		"y": 500,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "d2263cc3.f53ef",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p1_LP3",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 460,
+		"y": 600,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "3491db86.1e0edc",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p2_LP1",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 780,
+		"y": 400,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "98aedca3.6266b8",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p3_LP1",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1100,
+		"y": 400,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "562388d9.7f1a9",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p2_LP2",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 780,
+		"y": 500,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "41b8245b.5e25dc",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p3_LP2",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1100,
+		"y": 500,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "68aeb24.1c455cc",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p2_LP3",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 780,
+		"y": 600,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "eb955622.f1f86",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "current_p3_LP3",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1100,
+		"y": 600,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "9eed1b2f.670f88",
+		"type": "interval-length",
+		"z": "da060938.c8ff48",
+		"format": "mills",
+		"bytopic": false,
+		"minimum": "",
+		"maximum": "",
+		"window": "",
+		"timeout": false,
+		"msgTimeout": "",
+		"minimumunit": "msecs",
+		"maximumunit": "msecs",
+		"windowunit": "msecs",
+		"msgTimeoutUnit": "msecs",
+		"reset": false,
+		"startup": false,
+		"msgField": "timeInterval",
+		"timestampField": "previousTimestamp",
+		"repeatTimeout": false,
+		"name": "Zeit zwischen den Nachrichten messen",
+		"x": 420,
+		"y": 1140,
+		"wires": [
+			[
+				"2af10c7b.8279c4"
+			],
+			[]
+		]
+	},
+	{
+		"id": "4d3c89efaca7be5e",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "frequency",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 440,
+		"y": 740,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "1711441c919e2a1d",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "HausverbrauchNorm_p1",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 480,
+		"y": 160,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "fc15ba2aeda2dbb2",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "HausverbrauchNorm_p2",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 800,
+		"y": 160,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "a8e83e7e034910ce",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "HausverbrauchNorm_p3",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1120,
+		"y": 160,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "80f26b21aa9b6cca",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "hausverbrauch_p1",
+				"pt": "flow",
+				"to": "$max(\t   [\t       payload+$flowContext(\"HausverbrauchNorm_p1\"),\t       0\t   ]\t)",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "hausverbrauch_p2",
+				"pt": "flow",
+				"to": "$max(\t   [\t       payload+$flowContext(\"HausverbrauchNorm_p2\"),\t       0\t   ]\t)",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "hausverbrauch_p3",
+				"pt": "flow",
+				"to": "$max(\t   [\t       payload+$flowContext(\"HausverbrauchNorm_p3\"),\t       0\t   ]\t)",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "hausverbrauch",
+				"pt": "flow",
+				"to": "$flowContext(\"hausverbrauch_p1\") + $flowContext(\"hausverbrauch_p2\") + $flowContext(\"hausverbrauch_p3\")",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 790,
+		"y": 980,
+		"wires": [
+			[
+				"3ba0e67b.44155a",
+				"6c586f55.6462e"
+			]
+		]
+	},
+	{
+		"id": "c1f27145620a046e",
+		"type": "inject",
+		"z": "da060938.c8ff48",
+		"name": "Debug",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "10",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "debug",
+		"payload": "{\t   \"haus_norm\": [\t       $flowContext(\"HausverbrauchNorm_p1\"),\t       $flowContext(\"HausverbrauchNorm_p1\"),\t       $flowContext(\"HausverbrauchNorm_p1\")\t    ],\t    \"haus\": [\t        $flowContext(\"hausverbrauch_p1\"),\t        $flowContext(\"hausverbrauch_p2\"),\t        $flowContext(\"hausverbrauch_p3\")\t    ],\t    \"pv\": $flowContext(\"pv\"),\t    \"bat\": $flowContext(\"bat\"),\t    \"lp1\": [\t        $flowContext(\"id_LP1\"),\t        $flowContext(\"current_p1_LP1\"),\t        $flowContext(\"current_p2_LP1\"),\t        $flowContext(\"current_p3_LP1\")\t    ],\t    \"lp2\": [\t        $flowContext(\"id_LP2\"),\t        $flowContext(\"current_p1_LP2\"),\t        $flowContext(\"current_p2_LP2\"),\t        $flowContext(\"current_p3_LP2\")\t    ],\t    \"lp3\": [\t        $flowContext(\"id_LP3\"),\t        $flowContext(\"current_p1_LP3\"),\t        $flowContext(\"current_p2_LP3\"),\t        $flowContext(\"current_p3_LP3\")\t    ]\t}",
+		"payloadType": "jsonata",
+		"x": 1020,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "ee96ba88673e1d59",
+		"type": "switch",
+		"z": "da060938.c8ff48",
+		"name": "Switch by LP",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "cont",
+				"v": "/1/",
+				"vt": "str"
+			},
+			{
+				"t": "cont",
+				"v": "/2/",
+				"vt": "str"
+			},
+			{
+				"t": "cont",
+				"v": "/3/",
+				"vt": "str"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 3,
+		"x": 410,
+		"y": 260,
+		"wires": [
+			[
+				"2fa0518014006c84"
+			],
+			[
+				"b7990ed38fa1acd5"
+			],
+			[
+				"2954b1834ffee518"
+			]
+		]
+	},
+	{
+		"id": "2fa0518014006c84",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "id_LP1",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 650,
+		"y": 220,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "b7990ed38fa1acd5",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "id_LP2",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 650,
+		"y": 260,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "2954b1834ffee518",
+		"type": "change",
+		"z": "da060938.c8ff48",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "id_LP3",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 650,
+		"y": 300,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "5c4ac285.afe6e4",
+		"type": "subflow",
+		"name": "Sub Ladepunkt 2.0",
+		"info": "",
+		"category": "",
+		"in": [
+			{
+				"x": 60,
+				"y": 180,
+				"wires": [
+					{
+						"id": "5564373bd8d8091a"
+					}
+				]
+			}
+		],
+		"out": [
+			{
+				"x": 580,
+				"y": 40,
+				"wires": [
+					{
+						"id": "d477d279.2cc62",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1200,
+				"y": 660,
+				"wires": [
+					{
+						"id": "2254d233.5854e6",
+						"port": 0
+					},
+					{
+						"id": "9812193e.da699",
+						"port": 0
+					},
+					{
+						"id": "9da41a6e.e045a8",
+						"port": 0
+					},
+					{
+						"id": "29875bfa.f89a0c",
+						"port": 0
+					},
+					{
+						"id": "58ec8187c6755198",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1100,
+				"y": 200,
+				"wires": [
+					{
+						"id": "5b4b7510.acf434",
+						"port": 0
+					},
+					{
+						"id": "124dbffa.10bb",
+						"port": 0
+					},
+					{
+						"id": "5c185bf1.72503c",
+						"port": 0
+					},
+					{
+						"id": "78b855e9.ef0b24",
+						"port": 0
+					},
+					{
+						"id": "33434644.b16a22",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1180,
+				"y": 40,
+				"wires": [
+					{
+						"id": "bddf955cca42c275",
+						"port": 0
+					}
+				]
+			}
+		],
+		"env": [
+			{
+				"name": "Component-ID",
+				"type": "num",
+				"value": "",
+				"ui": {
+					"icon": "font-awesome/fa-hashtag",
+					"type": "spinner",
+					"opts": {
+						"min": 1
+					}
+				}
+			},
+			{
+				"name": "Phase1",
+				"type": "num",
+				"value": "1",
+				"ui": {
+					"icon": "font-awesome/fa-list-ol",
+					"type": "spinner",
+					"opts": {
+						"min": 1,
+						"max": 3
+					}
+				}
+			},
+			{
+				"name": "Chargepoint-ID",
+				"type": "num",
+				"value": "",
+				"ui": {
+					"type": "spinner",
+					"opts": {
+						"min": 1,
+						"max": 3
+					}
+				}
+			}
+		],
+		"meta": {},
+		"color": "#DDAA99",
+		"inputLabels": [
+			"Sollwerte"
+		],
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			"Input Passthrough",
+			"Debug"
+		],
+		"status": {
+			"x": 900,
+			"y": 40,
+			"wires": [
+				{
+					"id": "c4b80c5a.65fa88",
+					"port": 0
+				}
+			]
+		}
+	},
+	{
+		"id": "5b4b7510.acf434",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Sollstrom",
+				"pt": "flow",
+				"to": "$number(payload)",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 770,
+		"y": 120,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "124dbffa.10bb",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_EV_Phasen",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 770,
+		"y": 160,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "78b855e9.ef0b24",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Stecker",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 760,
+		"y": 240,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "f1d98f14.271ef",
+		"type": "switch",
+		"z": "5c4ac285.afe6e4",
+		"name": "Split Topics",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/set\\/current$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/max_phases$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/phases_to_use$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/plug_state$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/frequency$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 5,
+		"x": 510,
+		"y": 180,
+		"wires": [
+			[
+				"5b4b7510.acf434"
+			],
+			[
+				"124dbffa.10bb"
+			],
+			[
+				"5c185bf1.72503c"
+			],
+			[
+				"78b855e9.ef0b24"
+			],
+			[
+				"33434644.b16a22"
+			]
+		],
+		"outputLabels": [
+			"Sollstrom",
+			"Aktive Phasen",
+			null,
+			"Stecker-Status",
+			"Soll-Netzfrequenz"
+		]
+	},
+	{
+		"id": "546e1a19.1c607c",
+		"type": "inject",
+		"z": "5c4ac285.afe6e4",
+		"name": "Publish Trigger",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "10",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 140,
+		"y": 40,
+		"wires": [
+			[
+				"d477d279.2cc62"
+			]
+		]
+	},
+	{
+		"id": "d477d279.2cc62",
+		"type": "function",
+		"z": "5c4ac285.afe6e4",
+		"name": "Senden der Flow-Daten",
+		"func": "const LPNumber = env.get(\"Component-ID\");\n\nvar chargestat = 0;\nif( flow.get(\"Lp_Strom1\") > 0 || flow.get(\"Lp_Strom2\") > 0 || flow.get(\"Lp_Strom3\") > 0 ){\n    chargestat = 1;\n}\n\nvar statusColor = \"red\";\nvar statusShape = \"ring\";\nif (flow.get(\"Lp_Stecker\") == 1){\n    statusColor = \"green\"\n    if (chargestat == 1){\n        statusShape = \"dot\";\n    }\n}\n\nconst actualPower = parseInt(flow.get(\"Lp_Ladeleistung\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst phasesInUse = flow.get(\"Lp_Phasen\");\nconst phasesToUse = flow.get(\"Lp_Phasenumschaltung\");\nconst phasesEVmax = flow.get(\"Lp_EV_Phasen\");\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW \"+phasesInUse+\"P(\"+phasesEVmax+\"/\"+phasesToUse+\")\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/currents\",\n            payload: [flow.get(\"Lp_Strom1\"), flow.get(\"Lp_Strom2\"), flow.get(\"Lp_Strom3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/voltages\",\n            payload: [flow.get(\"Lp_Spannung1\"), flow.get(\"Lp_Spannung2\"), flow.get(\"Lp_Spannung3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/counter\",\n            payload: parseFloat(flow.get(\"Lp_Zähler\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/plug_state\",\n            payload: flow.get(\"Lp_Stecker\")\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/charge_state\",\n            payload: chargestat\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/phases_in_use\",\n            payload: phasesInUse\n        }\n    ]\n]\n",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 410,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "16b7648f.04f14b",
+		"type": "switch",
+		"z": "5c4ac285.afe6e4",
+		"name": "Zähler gesetzt?",
+		"property": "Lp_Zähler",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "null"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 1,
+		"x": 380,
+		"y": 340,
+		"wires": [
+			[
+				"898e546f.9440e"
+			]
+		]
+	},
+	{
+		"id": "898e546f.9440e",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "Zähler init",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Zähler",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 580,
+		"y": 340,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "fa801f38.18d6c8",
+		"type": "inject",
+		"z": "5c4ac285.afe6e4",
+		"name": "Init",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": 0.1,
+		"topic": "",
+		"payload": "",
+		"payloadType": "date",
+		"x": 130,
+		"y": 340,
+		"wires": [
+			[
+				"16b7648f.04f14b",
+				"4351720d.b31ed4",
+				"58ec8187c6755198"
+			]
+		]
+	},
+	{
+		"id": "5aa7e41e.77b01c",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "Energie in Wh",
+		"rules": [
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "$flowContext(\"Lp_Ladeleistung\")*timeInterval/1000/3600",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 740,
+		"y": 720,
+		"wires": [
+			[
+				"eae3cd53.403d28"
+			]
+		],
+		"info": "$number(payload)*(timeInterval/1000)/3600/1000"
+	},
+	{
+		"id": "eae3cd53.403d28",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "Zähler aktualisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Zähler",
+				"pt": "flow",
+				"to": "payload/1000+$flowContext(\"Lp_Zähler\")",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "Lp_Zähler",
+				"tot": "flow"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 950,
+		"y": 720,
+		"wires": [
+			[
+				"d28d6c2d.ccd198"
+			]
+		]
+	},
+	{
+		"id": "2254d233.5854e6",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Ladeleistung",
+				"pt": "flow",
+				"to": "$flowContext(\"Lp_Spannung1\")*$flowContext(\"Lp_Strom1\")+$flowContext(\"Lp_Spannung2\")*$flowContext(\"Lp_Strom2\")+$flowContext(\"Lp_Spannung3\")*$flowContext(\"Lp_Strom3\")",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "Lp_Ladeleistung",
+				"tot": "flow"
+			},
+			{
+				"t": "change",
+				"p": "topic",
+				"pt": "msg",
+				"from": "#",
+				"fromt": "str",
+				"to": "Component-ID",
+				"tot": "env"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 740,
+		"y": 660,
+		"wires": [
+			[
+				"65aa4e7c.604d5"
+			]
+		]
+	},
+	{
+		"id": "95e69cc1.77d8d8",
+		"type": "inject",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"props": [
+			{
+				"p": "payload"
+			}
+		],
+		"repeat": "2",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "",
+		"payload": "Lp_Sollstrom",
+		"payloadType": "flow",
+		"x": 170,
+		"y": 480,
+		"wires": [
+			[
+				"5db82d46.a42464"
+			]
+		]
+	},
+	{
+		"id": "43c64905.ca1d68",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Spannung1",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Spannung2",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Spannung3",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "/chargepoint/#/get/power_all",
+				"tot": "str"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 740,
+		"y": 600,
+		"wires": [
+			[
+				"2254d233.5854e6"
+			]
+		]
+	},
+	{
+		"id": "cd6c0260.bf728",
+		"type": "comment",
+		"z": "5c4ac285.afe6e4",
+		"name": "Spannungen",
+		"info": "",
+		"x": 150,
+		"y": 600,
+		"wires": []
+	},
+	{
+		"id": "b05f8ef.8357c7",
+		"type": "comment",
+		"z": "5c4ac285.afe6e4",
+		"name": "Ströme",
+		"info": "",
+		"x": 130,
+		"y": 540,
+		"wires": []
+	},
+	{
+		"id": "2ed9ad3b.5b9922",
+		"type": "comment",
+		"z": "5c4ac285.afe6e4",
+		"name": "Leistung",
+		"info": "",
+		"x": 140,
+		"y": 660,
+		"wires": []
+	},
+	{
+		"id": "5db82d46.a42464",
+		"type": "switch",
+		"z": "5c4ac285.afe6e4",
+		"name": "angesteckt?",
+		"property": "Lp_Stecker",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "eq",
+				"v": "0",
+				"vt": "num"
+			},
+			{
+				"t": "eq",
+				"v": "1",
+				"vt": "num"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 2,
+		"x": 370,
+		"y": 480,
+		"wires": [
+			[
+				"c4b09682.906f4"
+			],
+			[
+				"702fd2d4.54ae6c"
+			]
+		]
+	},
+	{
+		"id": "c4b09682.906f4",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "Sollstrom = 0",
+		"rules": [
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "0",
+				"tot": "num"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 580,
+		"y": 480,
+		"wires": [
+			[
+				"702fd2d4.54ae6c"
+			]
+		]
+	},
+	{
+		"id": "a93713d.2f351f",
+		"type": "comment",
+		"z": "5c4ac285.afe6e4",
+		"name": "Zählerstand",
+		"info": "",
+		"x": 150,
+		"y": 720,
+		"wires": []
+	},
+	{
+		"id": "d8be3486.74562",
+		"type": "random",
+		"z": "5c4ac285.afe6e4",
+		"name": "230V +/-5V",
+		"low": "225",
+		"high": "235",
+		"inte": "false",
+		"property": "payload",
+		"x": 370,
+		"y": 600,
+		"wires": [
+			[
+				"5944aff0.c01d48"
+			]
+		]
+	},
+	{
+		"id": "702fd2d4.54ae6c",
+		"type": "smooth",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"property": "payload",
+		"action": "mean",
+		"count": "4",
+		"round": "0",
+		"mult": "single",
+		"reduce": false,
+		"x": 560,
+		"y": 540,
+		"wires": [
+			[
+				"62f55674.8ce028"
+			]
+		]
+	},
+	{
+		"id": "5944aff0.c01d48",
+		"type": "smooth",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"property": "payload",
+		"action": "mean",
+		"count": "10",
+		"round": "1",
+		"mult": "single",
+		"reduce": false,
+		"x": 540,
+		"y": 600,
+		"wires": [
+			[
+				"43c64905.ca1d68"
+			]
+		]
+	},
+	{
+		"id": "c4b80c5a.65fa88",
+		"type": "status",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"scope": [
+			"d477d279.2cc62"
+		],
+		"x": 780,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "62f55674.8ce028",
+		"type": "function",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"func": "const phasesEVmax = flow.get(\"Lp_EV_Phasen\");\nconst phasesLPmax = flow.get(\"Lp_Phasenumschaltung\");\nvar phasesInUse = phasesEVmax;\nif(phasesEVmax > phasesLPmax){\n    phasesInUse = phasesLPmax;\n}\n\nconst phase1 = env.get(\"Phase1\");\nvar phaseCurrents = [0,0,0];\n\nswitch (phase1) {\n    case 1:\n        phaseCurrents[0] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[1] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[2] = msg.payload;\n        break;\n    case 2:\n        phaseCurrents[1] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[2] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[0] = msg.payload;\n        break;\n    case 3:\n        phaseCurrents[2] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[0] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[1] = msg.payload;\n        break;\n}\n\nflow.set(\"Lp_Strom1\", phaseCurrents[0]);\nflow.set(\"Lp_Strom2\", phaseCurrents[1]);\nflow.set(\"Lp_Strom3\", phaseCurrents[2]);\nflow.set(\"Lp_Phasen\", phasesInUse);\n\nreturn msg;\n",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 740,
+		"y": 540,
+		"wires": [
+			[
+				"d8be3486.74562",
+				"29875bfa.f89a0c",
+				"9da41a6e.e045a8",
+				"9812193e.da699"
+			]
+		]
+	},
+	{
+		"id": "d04bd47e.42ea98",
+		"type": "comment",
+		"z": "5c4ac285.afe6e4",
+		"name": "Netzfrequenz",
+		"info": "",
+		"x": 150,
+		"y": 780,
+		"wires": []
+	},
+	{
+		"id": "d28d6c2d.ccd198",
+		"type": "random",
+		"z": "5c4ac285.afe6e4",
+		"name": "+/-0.1Hz",
+		"low": "-0.1",
+		"high": "0.1",
+		"inte": "false",
+		"property": "payload",
+		"x": 360,
+		"y": 780,
+		"wires": [
+			[
+				"25ba0874.01329"
+			]
+		]
+	},
+	{
+		"id": "25ba0874.01329",
+		"type": "smooth",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"property": "payload",
+		"action": "mean",
+		"count": "5",
+		"round": "2",
+		"mult": "single",
+		"reduce": false,
+		"x": 560,
+		"y": 780,
+		"wires": [
+			[
+				"a8b4d76e.b28828"
+			]
+		]
+	},
+	{
+		"id": "a8b4d76e.b28828",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Netzfrequenz",
+				"pt": "flow",
+				"to": "payload+$flowContext(\"Lp_NetzfrequenzNorm\")",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 780,
+		"y": 780,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "33434644.b16a22",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_NetzfrequenzNorm",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 800,
+		"y": 280,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "4351720d.b31ed4",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "Init flow context",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_NetzfrequenzNorm",
+				"pt": "flow",
+				"to": "50",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Netzfrequenz",
+				"pt": "flow",
+				"to": "50",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Strom1",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Strom2",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Strom2",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Spannung1",
+				"pt": "flow",
+				"to": "230",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Spannung2",
+				"pt": "flow",
+				"to": "230",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Spannung3",
+				"pt": "flow",
+				"to": "230",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Ladeleistung",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Phasen",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 380,
+		"y": 380,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "5c185bf1.72503c",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Phasenumschaltung",
+				"pt": "flow",
+				"to": "payload",
+				"tot": "msg"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 800,
+		"y": 200,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "29875bfa.f89a0c",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "/chargepoint/#/get/current_p1",
+				"tot": "str"
+			},
+			{
+				"t": "change",
+				"p": "topic",
+				"pt": "msg",
+				"from": "#",
+				"fromt": "str",
+				"to": "Component-ID",
+				"tot": "env"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "$flowContext(\"Lp_Strom1\")",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 980,
+		"y": 440,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "9812193e.da699",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "/chargepoint/#/get/current_p3",
+				"tot": "str"
+			},
+			{
+				"t": "change",
+				"p": "topic",
+				"pt": "msg",
+				"from": "#",
+				"fromt": "str",
+				"to": "Component-ID",
+				"tot": "env"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "$flowContext(\"Lp_Strom3\")",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 980,
+		"y": 520,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "9da41a6e.e045a8",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"rules": [
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "/chargepoint/#/get/current_p2",
+				"tot": "str"
+			},
+			{
+				"t": "change",
+				"p": "topic",
+				"pt": "msg",
+				"from": "#",
+				"fromt": "str",
+				"to": "Component-ID",
+				"tot": "env"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "$flowContext(\"Lp_Strom2\")",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 980,
+		"y": 480,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "65aa4e7c.604d5",
+		"type": "interval-length",
+		"z": "5c4ac285.afe6e4",
+		"format": "mills",
+		"bytopic": false,
+		"minimum": "",
+		"maximum": "",
+		"window": "",
+		"timeout": false,
+		"msgTimeout": "",
+		"minimumunit": "msecs",
+		"maximumunit": "msecs",
+		"windowunit": "msecs",
+		"msgTimeoutUnit": "msecs",
+		"reset": false,
+		"startup": false,
+		"msgField": "timeInterval",
+		"timestampField": "previousTimestamp",
+		"repeatTimeout": false,
+		"name": "Zeit zwischen den Nachrichten messen",
+		"x": 460,
+		"y": 720,
+		"wires": [
+			[
+				"5aa7e41e.77b01c"
+			],
+			[]
+		]
+	},
+	{
+		"id": "5564373bd8d8091a",
+		"type": "switch",
+		"z": "5c4ac285.afe6e4",
+		"name": "Filter by Component-ID",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "jsonata_exp",
+				"v": "$contains(topic, \"chargepoint/\" & $string($env(\"Component-ID\")) & \"/\")",
+				"vt": "jsonata"
+			},
+			{
+				"t": "regex",
+				"v": "^/",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 2,
+		"x": 250,
+		"y": 180,
+		"wires": [
+			[
+				"f1d98f14.271ef"
+			],
+			[
+				"f1d98f14.271ef"
+			]
+		]
+	},
+	{
+		"id": "58ec8187c6755198",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "Push component-id to evu node",
+		"rules": [
+			{
+				"t": "set",
+				"p": "topic",
+				"pt": "msg",
+				"to": "$join(\t   [\t       \"simulator/chargepoint/\",\t       $string($env(\"Chargepoint-ID\")),\t       \"/id\"\t   ]\t)",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "$env(\"Component-ID\")",
+				"tot": "jsonata"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 430,
+		"y": 420,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "bddf955cca42c275",
+		"type": "inject",
+		"z": "5c4ac285.afe6e4",
+		"name": "Debug",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "10",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "5",
+		"topic": "debug",
+		"payload": "{\t   \"power\": $flowContext(\"Lp_Ladeleistung\"),\t   \"sollstrom\": $flowContext(\"Lp_Sollstrom\"),\t   \"strom\": [\t       $flowContext(\"Lp_Strom1\"),\t       $flowContext(\"Lp_Strom2\"),\t       $flowContext(\"Lp_Strom3\")\t   ],\t   \"spannung\": [\t       $flowContext(\"Lp_Spannung1\"),\t       $flowContext(\"Lp_Spannung2\"),\t       $flowContext(\"Lp_Spannung3\")\t   ],\t   \"lp_phasen\": $flowContext(\"Lp_Phasen\"),\t   \"ev_phasen\": $flowContext(\"Lp_EV_Phasen\"),\t   \"phasenumschaltung\": $flowContext(\"Lp_Phasenumschaltung\"),\t   \"stecker\": $flowContext(\"Lp_Stecker\"),\t   \"frequenz\": $flowContext(\"Lp_Netzfrequenz\"),\t   \"frequenz_norm\": $flowContext(\"Lp_NetzfrequenzNorm\"),\t   \"counter\": $flowContext(\"Lp_Zähler\")\t}",
+		"payloadType": "jsonata",
+		"x": 1060,
+		"y": 40,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "92165c72.a5f948",
+		"type": "tab",
+		"label": "Simulator 2.0",
+		"disabled": false,
+		"info": "# Simulator für openWB 2.x\nMit diesem Flow kann eine komplette virtuelle Umgebung für openWB bereitgestellt werden.\nDie Umgebung besteht aus einem Zähler (muss als \"EVU\" in der Hierarchie eingerichtet sein),\neinem PV-Modul, einem Batteriespeicher sowie drei Ladepunkten.\n\n## Hintergrundwissen\nDie PV-Anlage ist aktuell an alle drei Phasen \"angeschlossen\" und verteilt die Leistung gleichmäßig.\n_(ToDo: Anschluss variabel auf einzelne Phasen konfigurierbar)_\n\nDer Batteriespeicher verteilt seine Leistung ebenfalls gleichmäßig auf alle drei Phasen.\n_(ToDo: Anschluss variabel auf einzelne Phasen konfigurierbar)_\n\nDie Leistung des Speichers wird durch einen PID-Regler gesteuert. Die Parameter sind noch nicht optimal\neingestellt. Es kann vorkommen, dass die Regelung anfängt zu schwingen.\n_(ToDo: PID-Regler optimieren)_\n\n## Einrichtung\n**Da alle Komponenten in openWB 2.x dynamisch vergeben werden, müssen nach dem Import des Flows\ndie Komponenten-IDs an die jeweiligen Gegebenheiten der eigenen Installation angepasst werden!**\n\nDie Komponenten-IDs können in den Eigenschaften der Sub-Flows \"EVU\", \"PV1\", \"Bat\", \"LP1\", \"LP2\" und \"LP3\"\nfestgelegt werden.\n\nIn den Sub-Flow Eigenschaften der Ladepunkte kann ebenfalls festgelegt werden, an welcher Phase L1 des\nEVU angeschlossen ist. Dadurch können auch komplexe Setups mit (gut oder ungünstig) rotierten Phasen\nabgebildet werden.\n\n---\n\n# Steuerungsmöglichkeiten im Dashboard\n\n## EVU Zähler\nDer virtuelle Hausverbrauch kann im Dashboard je Phase festgelegt werden. Dadurch können gezielt Schieflasten\nfür das Lastmanagement erzeugt werden.\n\nDie Netzfrequenz des Zählers kann variiert werden, um den Netzschutz seitens des Energieversorgers zu testen.\n\n## PV\nDie aktuelle Leistung des Wechselrichters kann zwischen 0W und 10kW variiert werden.\n\n## Batteriespeicher\nDer aktuelle Ladestand (SoC) kann gezielt eingestellt werden.\n\nDie maximale Leistung des Speichers kann zwischen 0W und 5kW eingestellt werden.\n\nDie virtuelle Kapazität des Batteriespeichers kann auf bis zu 15kWh angepsst werden.\n\n## Ladepunkte\nEs kann ein Fahrzeug \"angesteckt\" werden.\n\nEs kann angegeben werden, wieviele Phasen das angeschlossene Fahrzeug maximal nutzen kann.\n",
+		"env": []
+	},
+	{
+		"id": "10c935e7.d81c6a",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Ladepunkt 1",
+		"style": {
+			"label": true,
+			"stroke": "#0070c0",
+			"fill": "#0070c0",
+			"fill-opacity": "0.25"
+		},
+		"nodes": [
+			"a9947543.f34bd",
+			"9dad0a08.b2c0f",
+			"66502428.6bc2ec",
+			"4efd69fa.600b1",
+			"bcde68d8.fbde58",
+			"b4c0b8e7.95301",
+			"c2212cf2.e2bfe",
+			"bca07e3a.16ff08",
+			"c7894755.6c934",
+			"1c08d24.841d3ae",
+			"aa2ce19d.eaf1e8",
+			"5aa1d8c69080891b",
+			"e6650f13b3cc695a",
+			"ed32a789.f4f798",
+			"8c206019dae8c4f0",
+			"44f4fcadd171fe6d",
+			"1e68cfab.5aab5"
+		],
+		"x": 14,
+		"y": 1144,
+		"w": 1112,
+		"h": 377
+	},
+	{
+		"id": "9924f98f.a9ee4",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "PV 1",
+		"style": {
+			"stroke": "#92d04f",
+			"fill": "#92d04f",
+			"fill-opacity": "0.25",
+			"label": true
+		},
+		"nodes": [
+			"2ab22961.d73e06",
+			"8c9d0662.e0c83",
+			"83082d16.5c0c",
+			"c6745675.5b9ec",
+			"c98a2da7.d75a38",
+			"54fdb013.3028f8",
+			"f5a5cec3.4fd8a8",
+			"9605f30870c8aa1a",
+			"c44e5ea9.d6b06"
+		],
+		"x": 14,
+		"y": 511.5,
+		"w": 1072,
+		"h": 209.5
+	},
+	{
+		"id": "adca6b9d.7ef678",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Ladepunkt 3",
+		"style": {
+			"label": true,
+			"stroke": "#0070c0",
+			"fill": "#0070c0",
+			"fill-opacity": "0.25"
+		},
+		"nodes": [
+			"f63b330f.c096e",
+			"db2cd204.7325b8",
+			"bb9a80f3.6ed8d",
+			"d1f901d9.c7e1e8",
+			"1d7224a3.976403",
+			"7e5d3fc0.81f4f8",
+			"c08ace1e.18cd08",
+			"e25c1f48.8f5e18",
+			"6add9cf1.e85094",
+			"b2b4e4a9.e78cd8",
+			"1ef6368267acccec",
+			"ab6610e58dd3eb1c",
+			"b9d330a1.5a",
+			"711106cc.96ed18",
+			"0a303aeb4727c810",
+			"268be22f.974e1e",
+			"61501fd2e18b0ed9"
+		],
+		"x": 14,
+		"y": 1984,
+		"w": 1112,
+		"h": 377
+	},
+	{
+		"id": "ba86e05e.3eb518",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "EVU",
+		"style": {
+			"stroke": "#ff0000",
+			"fill": "#ff0000",
+			"fill-opacity": "0.25",
+			"label": true
+		},
+		"nodes": [
+			"c5f91c31.79af98",
+			"2b5259d1.0e44ae",
+			"4c1c0dd1.be816c",
+			"fa5f56e0.4465e",
+			"90812723.7b3678",
+			"3e1bb28f.704a8e",
+			"f754ebac.d7d598",
+			"e854990fb4f9fab2",
+			"b46365f7d8aa13b6",
+			"524bd7697f7a306c",
+			"cde7317bc368b6b3",
+			"3036d462.5d789c",
+			"50edc6fb6d78740a",
+			"9145b76c44a9c929",
+			"3d8e2d3b4ee89e76",
+			"dc8f75f240dcf3b8",
+			"80ec81072842f306",
+			"7e693d583a244143"
+		],
+		"x": 14,
+		"y": 171.5,
+		"w": 1092,
+		"h": 289.5
+	},
+	{
+		"id": "c8376289.15bc1",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Speicher",
+		"style": {
+			"stroke": "#ffC000",
+			"fill": "#ffC000",
+			"fill-opacity": "0.25",
+			"label": true
+		},
+		"nodes": [
+			"9641b34b.2e9cd",
+			"145b387d.21aa88",
+			"dc7c97e6.6d6ad8",
+			"8243b679.c8f0f8",
+			"9ac3e1c9.e83e1",
+			"5deb68e4.79c458",
+			"96ea46e5.2b8618",
+			"ab178052.48bc98",
+			"a5a86b10.4dee38",
+			"d34c32d3.8f3448",
+			"6faaaef.e02a3d",
+			"bc6d74f3.8135d8",
+			"3df4fb4b.a9b13c",
+			"daf73f9a.fb50e",
+			"cf0bcd92.6fbe48",
+			"7a4711d4a689d6d4",
+			"234fd994.ef3106"
+		],
+		"x": 14,
+		"y": 764,
+		"w": 1092,
+		"h": 337
+	},
+	{
+		"id": "4ffeb8f2.88e97",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Ladepunkt 2",
+		"style": {
+			"label": true,
+			"stroke": "#0070c0",
+			"fill": "#0070c0",
+			"fill-opacity": "0.25"
+		},
+		"nodes": [
+			"9e477905.67cf68",
+			"30584a7c.88a996",
+			"ea8feee.389911",
+			"1b06aa0d.461b36",
+			"ce8b41fa.71b588",
+			"bd2575a0.0cbce",
+			"f1d863d5.a29c18",
+			"b5d70a0.77f3e78",
+			"73ffea7f.199e1c",
+			"f3d097a6.b80d18",
+			"89dc41d2.e8c018",
+			"266b0231.f4db36",
+			"4a41415e440b1304",
+			"0b69966b365c4536",
+			"43a92dd0.39da44",
+			"25f6934e60f9b4d6",
+			"5316d2315b34de5a"
+		],
+		"x": 14,
+		"y": 1564,
+		"w": 1112,
+		"h": 377
+	},
+	{
+		"id": "3e039a5092696f5f",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Allgemeine Nodes",
+		"style": {
+			"label": true
+		},
+		"nodes": [
+			"51d8d30d.b63194",
+			"fd94d24f.8eb11",
+			"f8fb4ebc3ad90445",
+			"529ef24e.47a72c",
+			"426f1381e1bed357"
+		],
+		"x": 14,
+		"y": 19,
+		"w": 1072,
+		"h": 142
+	},
+	{
+		"id": "a9947543.f34bd",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "max. 3 Phasen",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/max_phases",
+		"payload": "3",
+		"payloadType": "num",
+		"x": 140,
+		"y": 1260,
+		"wires": [
+			[
+				"bca07e3a.16ff08"
+			]
+		]
+	},
+	{
+		"id": "9dad0a08.b2c0f",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "Abgesteckt",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/plug_state",
+		"payload": "0",
+		"payloadType": "num",
+		"x": 130,
+		"y": 1300,
+		"wires": [
+			[
+				"bca07e3a.16ff08"
+			]
+		]
+	},
+	{
+		"id": "51d8d30d.b63194",
+		"type": "mqtt in",
+		"z": "92165c72.a5f948",
+		"g": "3e039a5092696f5f",
+		"name": "",
+		"topic": "openWB/chargepoint/+/set/current",
+		"qos": "2",
+		"datatype": "json",
+		"broker": "5c48b79a.d6b918",
+		"nl": false,
+		"rap": false,
+		"inputs": 0,
+		"x": 180,
+		"y": 60,
+		"wires": [
+			[
+				"f8fb4ebc3ad90445"
+			]
+		]
+	},
+	{
+		"id": "529ef24e.47a72c",
+		"type": "mqtt out",
+		"z": "92165c72.a5f948",
+		"g": "3e039a5092696f5f",
+		"name": "",
+		"topic": "",
+		"qos": "2",
+		"retain": "true",
+		"respTopic": "",
+		"contentType": "",
+		"userProps": "",
+		"correl": "",
+		"expiry": "",
+		"broker": "5c48b79a.d6b918",
+		"x": 1010,
+		"y": 60,
+		"wires": []
+	},
+	{
+		"id": "66502428.6bc2ec",
+		"type": "ui_dropdown",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "EV1 max. Phasen",
+		"label": "EV max. Phasen",
+		"tooltip": "",
+		"place": "Select option",
+		"group": "703fdeb2.7ab84",
+		"order": 8,
+		"width": 0,
+		"height": 0,
+		"passthru": false,
+		"multiple": false,
+		"options": [
+			{
+				"label": "1 Phase",
+				"value": 1,
+				"type": "num"
+			},
+			{
+				"label": "2 Phasen",
+				"value": 2,
+				"type": "num"
+			},
+			{
+				"label": "3 Phasen",
+				"value": 3,
+				"type": "num"
+			}
+		],
+		"payload": "",
+		"topic": "/max_phases",
+		"topicType": "str",
+		"className": "",
+		"x": 590,
+		"y": 1360,
+		"wires": [
+			[
+				"bca07e3a.16ff08"
+			]
+		]
+	},
+	{
+		"id": "4efd69fa.600b1",
+		"type": "ui_switch",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "Lp1 Stecker",
+		"label": "Stecker",
+		"tooltip": "",
+		"group": "703fdeb2.7ab84",
+		"order": 7,
+		"width": 0,
+		"height": 0,
+		"passthru": false,
+		"decouple": "true",
+		"topic": "/plug_state",
+		"topicType": "str",
+		"style": "",
+		"onvalue": "1",
+		"onvalueType": "num",
+		"onicon": "",
+		"oncolor": "",
+		"offvalue": "0",
+		"offvalueType": "num",
+		"officon": "",
+		"offcolor": "",
+		"animate": true,
+		"className": "",
+		"x": 570,
+		"y": 1420,
+		"wires": [
+			[
+				"bca07e3a.16ff08"
+			]
+		]
+	},
+	{
+		"id": "bcde68d8.fbde58",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"group": "703fdeb2.7ab84",
+		"order": 6,
+		"width": 0,
+		"height": 0,
+		"name": "Lp1 Zähler",
+		"label": "Zählerstand",
+		"format": "{{msg.payload | number:3}} kW",
+		"layout": "row-spread",
+		"x": 1010,
+		"y": 1280,
+		"wires": []
+	},
+	{
+		"id": "b4c0b8e7.95301",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"group": "703fdeb2.7ab84",
+		"order": 2,
+		"width": 0,
+		"height": 0,
+		"name": "Lp1 Sollstrom",
+		"label": "Soll-Strom",
+		"format": "{{msg.payload}} A",
+		"layout": "row-spread",
+		"className": "",
+		"x": 1020,
+		"y": 1440,
+		"wires": []
+	},
+	{
+		"id": "c2212cf2.e2bfe",
+		"type": "ui_gauge",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "Lp1 Leistung",
+		"group": "703fdeb2.7ab84",
+		"order": 5,
+		"width": 0,
+		"height": 0,
+		"gtype": "gage",
+		"title": "Leistung",
+		"label": "kW",
+		"format": "{{value/1000 | number:2}}",
+		"min": 0,
+		"max": "22080",
+		"colors": [
+			"#00b500",
+			"#00ff00",
+			"#00b500"
+		],
+		"seg1": "4140",
+		"seg2": "7360",
+		"className": "",
+		"x": 1010,
+		"y": 1320,
+		"wires": []
+	},
+	{
+		"id": "bca07e3a.16ff08",
+		"type": "subflow:5c4ac285.afe6e4",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "LP1",
+		"env": [
+			{
+				"name": "Component-ID",
+				"value": "3",
+				"type": "num"
+			},
+			{
+				"name": "Chargepoint-ID",
+				"value": "1",
+				"type": "num"
+			},
+			{
+				"name": "Component ID",
+				"value": "3",
+				"type": "num"
+			}
+		],
+		"x": 630,
+		"y": 1200,
+		"wires": [
+			[
+				"c7894755.6c934",
+				"ed32a789.f4f798",
+				"e6650f13b3cc695a"
+			],
+			[
+				"1c08d24.841d3ae"
+			],
+			[
+				"44f4fcadd171fe6d"
+			],
+			[]
+		],
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			"input passthrough",
+			""
+		]
+	},
+	{
+		"id": "c7894755.6c934",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/get\\/counter$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/power$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/phases_in_use$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/currents$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 790,
+		"y": 1300,
+		"wires": [
+			[
+				"bcde68d8.fbde58"
+			],
+			[
+				"c2212cf2.e2bfe"
+			],
+			[
+				"1e68cfab.5aab5"
+			],
+			[
+				"8c206019dae8c4f0"
+			]
+		],
+		"outputLabels": [
+			"Zählerstand",
+			"Leistung",
+			"aktive Phasen",
+			"Ströme"
+		]
+	},
+	{
+		"id": "f63b330f.c096e",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"group": "77ebf297.439d3c",
+		"order": 2,
+		"width": 0,
+		"height": 0,
+		"name": "Lp3 Sollstrom",
+		"label": "Soll-Strom",
+		"format": "{{msg.payload}} A",
+		"layout": "row-spread",
+		"x": 1020,
+		"y": 2280,
+		"wires": []
+	},
+	{
+		"id": "db2cd204.7325b8",
+		"type": "ui_dropdown",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "EV3 max. Phasen",
+		"label": "EV max. Phasen",
+		"tooltip": "",
+		"place": "Select option",
+		"group": "77ebf297.439d3c",
+		"order": 8,
+		"width": 0,
+		"height": 0,
+		"passthru": false,
+		"multiple": false,
+		"options": [
+			{
+				"label": "1 Phase",
+				"value": 1,
+				"type": "num"
+			},
+			{
+				"label": "2 Phasen",
+				"value": 2,
+				"type": "num"
+			},
+			{
+				"label": "3 Phasen",
+				"value": 3,
+				"type": "num"
+			}
+		],
+		"payload": "",
+		"topic": "/max_phases",
+		"topicType": "str",
+		"className": "",
+		"x": 590,
+		"y": 2200,
+		"wires": [
+			[
+				"7e5d3fc0.81f4f8"
+			]
+		]
+	},
+	{
+		"id": "bb9a80f3.6ed8d",
+		"type": "ui_switch",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "Lp3 Stecker",
+		"label": "Stecker",
+		"tooltip": "",
+		"group": "77ebf297.439d3c",
+		"order": 7,
+		"width": 0,
+		"height": 0,
+		"passthru": false,
+		"decouple": "true",
+		"topic": "/plug_state",
+		"topicType": "str",
+		"style": "",
+		"onvalue": "1",
+		"onvalueType": "num",
+		"onicon": "",
+		"oncolor": "",
+		"offvalue": "0",
+		"offvalueType": "num",
+		"officon": "",
+		"offcolor": "",
+		"animate": true,
+		"className": "",
+		"x": 570,
+		"y": 2260,
+		"wires": [
+			[
+				"7e5d3fc0.81f4f8"
+			]
+		]
+	},
+	{
+		"id": "d1f901d9.c7e1e8",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "max. 1 Phase",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/phasesInUse",
+		"payload": "1",
+		"payloadType": "num",
+		"x": 140,
+		"y": 2100,
+		"wires": [
+			[
+				"7e5d3fc0.81f4f8"
+			]
+		]
+	},
+	{
+		"id": "1d7224a3.976403",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "Abgesteckt",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/plugStat",
+		"payload": "0",
+		"payloadType": "num",
+		"x": 130,
+		"y": 2140,
+		"wires": [
+			[
+				"7e5d3fc0.81f4f8"
+			]
+		]
+	},
+	{
+		"id": "7e5d3fc0.81f4f8",
+		"type": "subflow:5c4ac285.afe6e4",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "LP3",
+		"env": [
+			{
+				"name": "Component-ID",
+				"value": "5",
+				"type": "num"
+			},
+			{
+				"name": "Phase1",
+				"value": "3",
+				"type": "num"
+			},
+			{
+				"name": "Chargepoint-ID",
+				"value": "3",
+				"type": "num"
+			},
+			{
+				"name": "LPNumber",
+				"value": "3",
+				"type": "num"
+			}
+		],
+		"x": 630,
+		"y": 2040,
+		"wires": [
+			[
+				"b9d330a1.5a",
+				"711106cc.96ed18",
+				"ab6610e58dd3eb1c"
+			],
+			[
+				"6add9cf1.e85094"
+			],
+			[
+				"61501fd2e18b0ed9"
+			],
+			[]
+		]
+	},
+	{
+		"id": "c08ace1e.18cd08",
+		"type": "ui_gauge",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "Lp3 Leistung",
+		"group": "77ebf297.439d3c",
+		"order": 5,
+		"width": 0,
+		"height": 0,
+		"gtype": "gage",
+		"title": "Leistung",
+		"label": "kW",
+		"format": "{{value/1000 | number:2}}",
+		"min": 0,
+		"max": "22080",
+		"colors": [
+			"#00b500",
+			"#00ff00",
+			"#00b500"
+		],
+		"seg1": "4140",
+		"seg2": "7360",
+		"className": "",
+		"x": 1010,
+		"y": 2160,
+		"wires": []
+	},
+	{
+		"id": "e25c1f48.8f5e18",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"group": "77ebf297.439d3c",
+		"order": 6,
+		"width": 0,
+		"height": 0,
+		"name": "Lp3 Zähler",
+		"label": "Zählerstand",
+		"format": "{{msg.payload | number:3}} kW",
+		"layout": "row-spread",
+		"x": 1010,
+		"y": 2120,
+		"wires": []
+	},
+	{
+		"id": "c5f91c31.79af98",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/imported$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/exported$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/power$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/currents$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 790,
+		"y": 320,
+		"wires": [
+			[
+				"fa5f56e0.4465e"
+			],
+			[
+				"2b5259d1.0e44ae"
+			],
+			[
+				"4c1c0dd1.be816c"
+			],
+			[
+				"524bd7697f7a306c"
+			]
+		],
+		"outputLabels": [
+			"Zählerstand Import",
+			"Zählerstand Export",
+			"Leistung",
+			"Ströme"
+		]
+	},
+	{
+		"id": "2b5259d1.0e44ae",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"group": "9b18f281.ca979",
+		"order": 5,
+		"width": 0,
+		"height": 0,
+		"name": "EVU Zähler Export",
+		"label": "Zählerstand Exp.",
+		"format": "{{value/1000 | number:3}} kWh",
+		"layout": "row-spread",
+		"x": 990,
+		"y": 340,
+		"wires": []
+	},
+	{
+		"id": "4c1c0dd1.be816c",
+		"type": "ui_gauge",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "EVU Leistung",
+		"group": "9b18f281.ca979",
+		"order": 7,
+		"width": 0,
+		"height": 0,
+		"gtype": "gage",
+		"title": "Leistung",
+		"label": "kW",
+		"format": "{{value/1000 | number:2}}",
+		"min": "-10000",
+		"max": "20000",
+		"colors": [
+			"#00ff00",
+			"#ff0000",
+			"#ff0000"
+		],
+		"seg1": "0",
+		"seg2": "0",
+		"x": 980,
+		"y": 380,
+		"wires": []
+	},
+	{
+		"id": "fa5f56e0.4465e",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"group": "9b18f281.ca979",
+		"order": 6,
+		"width": 0,
+		"height": 0,
+		"name": "EVU Zähler Import",
+		"label": "Zählerstand Imp.",
+		"format": "{{value/1000 | number:3}} kWh",
+		"layout": "row-spread",
+		"x": 990,
+		"y": 300,
+		"wires": []
+	},
+	{
+		"id": "90812723.7b3678",
+		"type": "subflow:da060938.c8ff48",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "EVU",
+		"env": [],
+		"x": 590,
+		"y": 220,
+		"wires": [
+			[
+				"c5f91c31.79af98",
+				"3036d462.5d789c",
+				"cde7317bc368b6b3"
+			],
+			[
+				"f754ebac.d7d598"
+			],
+			[]
+		],
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			""
+		]
+	},
+	{
+		"id": "3e1bb28f.704a8e",
+		"type": "link in",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "EVU In",
+		"links": [
+			"daf73f9a.fb50e",
+			"54fdb013.3028f8",
+			"1c08d24.841d3ae",
+			"73ffea7f.199e1c",
+			"6add9cf1.e85094"
+		],
+		"x": 335,
+		"y": 220,
+		"wires": [
+			[
+				"90812723.7b3678"
+			]
+		]
+	},
+	{
+		"id": "9641b34b.2e9cd",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/imported$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/exported$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/power$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/soc$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 790,
+		"y": 920,
+		"wires": [
+			[
+				"145b387d.21aa88"
+			],
+			[
+				"dc7c97e6.6d6ad8"
+			],
+			[
+				"8243b679.c8f0f8"
+			],
+			[
+				"9ac3e1c9.e83e1",
+				"5deb68e4.79c458"
+			]
+		],
+		"outputLabels": [
+			"Zählerstand Import",
+			"Zählerstand Export",
+			"Leistung",
+			"SoC"
+		]
+	},
+	{
+		"id": "145b387d.21aa88",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"group": "bda74558.0d74e8",
+		"order": 5,
+		"width": 0,
+		"height": 0,
+		"name": "BAT Zähler Import",
+		"label": "Zählerstand Imp.",
+		"format": "{{value/1000 | number:3}} kWh",
+		"layout": "row-spread",
+		"x": 990,
+		"y": 900,
+		"wires": []
+	},
+	{
+		"id": "dc7c97e6.6d6ad8",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"group": "bda74558.0d74e8",
+		"order": 6,
+		"width": 0,
+		"height": 0,
+		"name": "BAT Zähler Export",
+		"label": "Zählerstand Exp.",
+		"format": "{{value/1000 | number:3}} kWh",
+		"layout": "row-spread",
+		"x": 990,
+		"y": 940,
+		"wires": []
+	},
+	{
+		"id": "8243b679.c8f0f8",
+		"type": "ui_gauge",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "BAT Leistung",
+		"group": "bda74558.0d74e8",
+		"order": 7,
+		"width": 0,
+		"height": 0,
+		"gtype": "gage",
+		"title": "Leistung",
+		"label": "kW",
+		"format": "{{value/1000 | number:2}}",
+		"min": "-5000",
+		"max": "5000",
+		"colors": [
+			"#00ff00",
+			"#ffff00",
+			"#ff0000"
+		],
+		"seg1": "0",
+		"seg2": "0",
+		"className": "",
+		"x": 970,
+		"y": 980,
+		"wires": []
+	},
+	{
+		"id": "9ac3e1c9.e83e1",
+		"type": "ui_gauge",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "BAT SoC",
+		"group": "bda74558.0d74e8",
+		"order": 8,
+		"width": 0,
+		"height": 0,
+		"gtype": "wave",
+		"title": "SoC",
+		"label": "%",
+		"format": "{{value}}",
+		"min": "0",
+		"max": "100",
+		"colors": [
+			"#ff0000",
+			"#ffff00",
+			"#00ff00"
+		],
+		"seg1": "33",
+		"seg2": "66",
+		"x": 960,
+		"y": 1020,
+		"wires": []
+	},
+	{
+		"id": "5deb68e4.79c458",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "Ladestand",
+		"label": "SoC",
+		"tooltip": "",
+		"group": "bda74558.0d74e8",
+		"order": 2,
+		"width": 0,
+		"height": 0,
+		"passthru": false,
+		"outs": "end",
+		"topic": "/soc",
+		"topicType": "str",
+		"min": 0,
+		"max": "100",
+		"step": "1",
+		"className": "",
+		"x": 970,
+		"y": 1060,
+		"wires": [
+			[
+				"bc6d74f3.8135d8"
+			]
+		]
+	},
+	{
+		"id": "96ea46e5.2b8618",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "50% SoC",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "0.1",
+		"topic": "/soc",
+		"payload": "50",
+		"payloadType": "num",
+		"x": 120,
+		"y": 880,
+		"wires": [
+			[
+				"bc6d74f3.8135d8"
+			]
+		]
+	},
+	{
+		"id": "ab178052.48bc98",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "",
+		"label": "Max. Leistung",
+		"tooltip": "",
+		"group": "bda74558.0d74e8",
+		"order": 3,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/BatMaxPower",
+		"min": 0,
+		"max": "5000",
+		"step": "100",
+		"x": 400,
+		"y": 940,
+		"wires": [
+			[
+				"bc6d74f3.8135d8"
+			]
+		]
+	},
+	{
+		"id": "a5a86b10.4dee38",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "3300W Leistung",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": 0.1,
+		"topic": "/BatMaxPower",
+		"payload": "3300",
+		"payloadType": "num",
+		"x": 140,
+		"y": 940,
+		"wires": [
+			[
+				"ab178052.48bc98"
+			]
+		]
+	},
+	{
+		"id": "d34c32d3.8f3448",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "",
+		"label": "Kapazität",
+		"tooltip": "",
+		"group": "bda74558.0d74e8",
+		"order": 4,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/BatCapacity",
+		"min": 0,
+		"max": "15000",
+		"step": "1000",
+		"x": 380,
+		"y": 1000,
+		"wires": [
+			[
+				"bc6d74f3.8135d8"
+			]
+		]
+	},
+	{
+		"id": "6faaaef.e02a3d",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "5kWh Kapazität",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": 0.1,
+		"topic": "/BatCapacity",
+		"payload": "5000",
+		"payloadType": "num",
+		"x": 140,
+		"y": 1000,
+		"wires": [
+			[
+				"d34c32d3.8f3448"
+			]
+		]
+	},
+	{
+		"id": "bc6d74f3.8135d8",
+		"type": "subflow:2dd5cf5c.4ae26",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "Bat",
+		"env": [],
+		"x": 590,
+		"y": 820,
+		"wires": [
+			[
+				"9641b34b.2e9cd",
+				"234fd994.ef3106",
+				"7a4711d4a689d6d4"
+			],
+			[
+				"daf73f9a.fb50e"
+			],
+			[
+				"3df4fb4b.a9b13c"
+			],
+			[]
+		]
+	},
+	{
+		"id": "3df4fb4b.a9b13c",
+		"type": "ui_chart",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "",
+		"group": "bda74558.0d74e8",
+		"order": 9,
+		"width": 0,
+		"height": 0,
+		"label": "chart",
+		"chartType": "line",
+		"legend": "false",
+		"xformat": "HH:mm:ss",
+		"interpolate": "linear",
+		"nodata": "",
+		"dot": false,
+		"ymin": "",
+		"ymax": "",
+		"removeOlder": 1,
+		"removeOlderPoints": "",
+		"removeOlderUnit": "3600",
+		"cutout": 0,
+		"useOneColor": false,
+		"useUTC": false,
+		"colors": [
+			"#1f77b4",
+			"#aec7e8",
+			"#ff7f0e",
+			"#2ca02c",
+			"#98df8a",
+			"#d62728",
+			"#ff9896",
+			"#9467bd",
+			"#c5b0d5"
+		],
+		"outputs": 1,
+		"x": 730,
+		"y": 1020,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "daf73f9a.fb50e",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "BAT out",
+		"links": [
+			"3e1bb28f.704a8e"
+		],
+		"x": 715,
+		"y": 980,
+		"wires": []
+	},
+	{
+		"id": "f754ebac.d7d598",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "EVU Out",
+		"links": [
+			"cf0bcd92.6fbe48"
+		],
+		"x": 715,
+		"y": 420,
+		"wires": []
+	},
+	{
+		"id": "cf0bcd92.6fbe48",
+		"type": "link in",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "BAT In",
+		"links": [
+			"f754ebac.d7d598"
+		],
+		"x": 335,
+		"y": 820,
+		"wires": [
+			[
+				"bc6d74f3.8135d8"
+			]
+		]
+	},
+	{
+		"id": "1c08d24.841d3ae",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "LP1 out",
+		"links": [
+			"3e1bb28f.704a8e"
+		],
+		"x": 775,
+		"y": 1240,
+		"wires": []
+	},
+	{
+		"id": "6add9cf1.e85094",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "LP3 out",
+		"links": [
+			"3e1bb28f.704a8e"
+		],
+		"x": 775,
+		"y": 2080,
+		"wires": []
+	},
+	{
+		"id": "2ab22961.d73e06",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"name": "",
+		"label": "PV-Leistung",
+		"tooltip": "",
+		"group": "1690fa25.a7c9a6",
+		"order": 2,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/W",
+		"min": 0,
+		"max": "10000",
+		"step": "100",
+		"x": 390,
+		"y": 560,
+		"wires": [
+			[
+				"c98a2da7.d75a38"
+			]
+		]
+	},
+	{
+		"id": "8c9d0662.e0c83",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/counter$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/power$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 2,
+		"x": 790,
+		"y": 640,
+		"wires": [
+			[
+				"83082d16.5c0c"
+			],
+			[
+				"c6745675.5b9ec"
+			]
+		],
+		"outputLabels": [
+			"Zählerstand",
+			"Leistung"
+		]
+	},
+	{
+		"id": "83082d16.5c0c",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"group": "1690fa25.a7c9a6",
+		"order": 3,
+		"width": 0,
+		"height": 0,
+		"name": "PV Zähler",
+		"label": "Zählerstand",
+		"format": "{{value/1000 | number:3}} kWh",
+		"layout": "row-spread",
+		"x": 960,
+		"y": 640,
+		"wires": []
+	},
+	{
+		"id": "c6745675.5b9ec",
+		"type": "ui_gauge",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"name": "PV Leistung",
+		"group": "1690fa25.a7c9a6",
+		"order": 4,
+		"width": 0,
+		"height": 0,
+		"gtype": "gage",
+		"title": "Leistung",
+		"label": "kW",
+		"format": "{{value/1000 | number:2}}",
+		"min": 0,
+		"max": "-10000",
+		"colors": [
+			"#00b500",
+			"#00ff00",
+			"#00b500"
+		],
+		"seg1": "",
+		"seg2": "",
+		"x": 970,
+		"y": 680,
+		"wires": []
+	},
+	{
+		"id": "c98a2da7.d75a38",
+		"type": "subflow:c5821ca1.ee2da",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"name": "PV1",
+		"env": [],
+		"x": 590,
+		"y": 560,
+		"wires": [
+			[
+				"8c9d0662.e0c83",
+				"c44e5ea9.d6b06",
+				"9605f30870c8aa1a"
+			],
+			[
+				"54fdb013.3028f8"
+			],
+			[]
+		]
+	},
+	{
+		"id": "54fdb013.3028f8",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"name": "PV out",
+		"links": [
+			"3e1bb28f.704a8e"
+		],
+		"x": 715,
+		"y": 680,
+		"wires": []
+	},
+	{
+		"id": "f5a5cec3.4fd8a8",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"name": "1500 W",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/W",
+		"payload": "1500",
+		"payloadType": "num",
+		"x": 120,
+		"y": 560,
+		"wires": [
+			[
+				"2ab22961.d73e06"
+			]
+		]
+	},
+	{
+		"id": "fd94d24f.8eb11",
+		"type": "mqtt in",
+		"z": "92165c72.a5f948",
+		"g": "3e039a5092696f5f",
+		"name": "",
+		"topic": "openWB/chargepoint/+/set/phases_to_use",
+		"qos": "2",
+		"datatype": "json",
+		"broker": "5c48b79a.d6b918",
+		"nl": false,
+		"rap": false,
+		"inputs": 0,
+		"x": 200,
+		"y": 120,
+		"wires": [
+			[
+				"f8fb4ebc3ad90445"
+			]
+		]
+	},
+	{
+		"id": "aa2ce19d.eaf1e8",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"group": "703fdeb2.7ab84",
+		"order": 3,
+		"width": 0,
+		"height": 0,
+		"name": "Lp1 Sollphasen",
+		"label": "Soll-Phasen",
+		"format": "{{msg.payload}}",
+		"layout": "row-spread",
+		"className": "",
+		"x": 1020,
+		"y": 1480,
+		"wires": []
+	},
+	{
+		"id": "b2b4e4a9.e78cd8",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"group": "77ebf297.439d3c",
+		"order": 3,
+		"width": 0,
+		"height": 0,
+		"name": "Lp3 Sollphasen",
+		"label": "Soll-Phasen",
+		"format": "{{msg.payload}}",
+		"layout": "row-spread",
+		"x": 1020,
+		"y": 2320,
+		"wires": []
+	},
+	{
+		"id": "1e68cfab.5aab5",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"group": "703fdeb2.7ab84",
+		"order": 4,
+		"width": 0,
+		"height": 0,
+		"name": "Lp1 Phasen",
+		"label": "Ist-Phasen",
+		"format": "{{msg.payload}}",
+		"layout": "row-spread",
+		"x": 1010,
+		"y": 1360,
+		"wires": []
+	},
+	{
+		"id": "268be22f.974e1e",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"group": "77ebf297.439d3c",
+		"order": 4,
+		"width": 0,
+		"height": 0,
+		"name": "Lp3 Phasen",
+		"label": "Ist-Phasen",
+		"format": "{{msg.payload}}",
+		"layout": "row-spread",
+		"x": 1010,
+		"y": 2200,
+		"wires": []
+	},
+	{
+		"id": "b9d330a1.5a",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/get\\/counter$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/power$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/phases_in_use$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/currents$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 790,
+		"y": 2140,
+		"wires": [
+			[
+				"e25c1f48.8f5e18"
+			],
+			[
+				"c08ace1e.18cd08"
+			],
+			[
+				"268be22f.974e1e"
+			],
+			[
+				"0a303aeb4727c810"
+			]
+		],
+		"outputLabels": [
+			"Zählerstand",
+			"Leistung",
+			"",
+			""
+		]
+	},
+	{
+		"id": "c44e5ea9.d6b06",
+		"type": "debug",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"name": "",
+		"active": false,
+		"tosidebar": true,
+		"console": false,
+		"tostatus": false,
+		"complete": "false",
+		"statusVal": "",
+		"statusType": "auto",
+		"x": 970,
+		"y": 560,
+		"wires": []
+	},
+	{
+		"id": "3036d462.5d789c",
+		"type": "debug",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "",
+		"active": false,
+		"tosidebar": true,
+		"console": false,
+		"tostatus": false,
+		"complete": "false",
+		"statusVal": "",
+		"statusType": "auto",
+		"x": 970,
+		"y": 220,
+		"wires": []
+	},
+	{
+		"id": "234fd994.ef3106",
+		"type": "debug",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "",
+		"active": false,
+		"tosidebar": true,
+		"console": false,
+		"tostatus": false,
+		"complete": "false",
+		"statusVal": "",
+		"statusType": "auto",
+		"x": 970,
+		"y": 820,
+		"wires": []
+	},
+	{
+		"id": "ed32a789.f4f798",
+		"type": "debug",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "",
+		"active": false,
+		"tosidebar": true,
+		"console": false,
+		"tostatus": false,
+		"complete": "false",
+		"statusVal": "",
+		"statusType": "auto",
+		"x": 1010,
+		"y": 1200,
+		"wires": []
+	},
+	{
+		"id": "43a92dd0.39da44",
+		"type": "debug",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "",
+		"active": false,
+		"tosidebar": true,
+		"console": false,
+		"tostatus": false,
+		"complete": "false",
+		"statusVal": "",
+		"statusType": "auto",
+		"x": 1010,
+		"y": 1620,
+		"wires": []
+	},
+	{
+		"id": "711106cc.96ed18",
+		"type": "debug",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "",
+		"active": false,
+		"tosidebar": true,
+		"console": false,
+		"tostatus": false,
+		"complete": "false",
+		"statusVal": "",
+		"statusType": "auto",
+		"x": 1010,
+		"y": 2040,
+		"wires": []
+	},
+	{
+		"id": "e854990fb4f9fab2",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "Netzfrequenz 50Hz",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/frequency",
+		"payload": "50",
+		"payloadType": "num",
+		"x": 150,
+		"y": 260,
+		"wires": [
+			[
+				"b46365f7d8aa13b6"
+			]
+		]
+	},
+	{
+		"id": "b46365f7d8aa13b6",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "EVU Netzfrequenz",
+		"label": "Netzfrequenz",
+		"tooltip": "",
+		"group": "9b18f281.ca979",
+		"order": 9,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/frequency",
+		"topicType": "str",
+		"min": "40",
+		"max": "55",
+		"step": "0.1",
+		"className": "",
+		"x": 370,
+		"y": 260,
+		"wires": [
+			[
+				"90812723.7b3678"
+			]
+		]
+	},
+	{
+		"id": "9e477905.67cf68",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"group": "3fdb380f.aba898",
+		"order": 2,
+		"width": 0,
+		"height": 0,
+		"name": "Lp2 Sollstrom",
+		"label": "Soll-Strom",
+		"format": "{{msg.payload}} A",
+		"layout": "row-spread",
+		"x": 1020,
+		"y": 1860,
+		"wires": []
+	},
+	{
+		"id": "30584a7c.88a996",
+		"type": "ui_dropdown",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "EV2 max. Phasen",
+		"label": "EV max. Phasen",
+		"tooltip": "",
+		"place": "Select option",
+		"group": "3fdb380f.aba898",
+		"order": 8,
+		"width": 0,
+		"height": 0,
+		"passthru": false,
+		"multiple": false,
+		"options": [
+			{
+				"label": "1 Phase",
+				"value": 1,
+				"type": "num"
+			},
+			{
+				"label": "2 Phasen",
+				"value": 2,
+				"type": "num"
+			},
+			{
+				"label": "3 Phasen",
+				"value": 3,
+				"type": "num"
+			}
+		],
+		"payload": "",
+		"topic": "/max_phases",
+		"topicType": "str",
+		"className": "",
+		"x": 590,
+		"y": 1780,
+		"wires": [
+			[
+				"bd2575a0.0cbce"
+			]
+		]
+	},
+	{
+		"id": "ea8feee.389911",
+		"type": "ui_switch",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "Lp2 Stecker",
+		"label": "Stecker",
+		"tooltip": "",
+		"group": "3fdb380f.aba898",
+		"order": 7,
+		"width": 0,
+		"height": 0,
+		"passthru": false,
+		"decouple": "true",
+		"topic": "/plug_state",
+		"topicType": "str",
+		"style": "",
+		"onvalue": "1",
+		"onvalueType": "num",
+		"onicon": "",
+		"oncolor": "",
+		"offvalue": "0",
+		"offvalueType": "num",
+		"officon": "",
+		"offcolor": "",
+		"animate": true,
+		"className": "",
+		"x": 570,
+		"y": 1840,
+		"wires": [
+			[
+				"bd2575a0.0cbce"
+			]
+		]
+	},
+	{
+		"id": "1b06aa0d.461b36",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "max. 2 Phasen",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/max_phases",
+		"payload": "2",
+		"payloadType": "num",
+		"x": 140,
+		"y": 1680,
+		"wires": [
+			[
+				"bd2575a0.0cbce"
+			]
+		]
+	},
+	{
+		"id": "ce8b41fa.71b588",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "Abgesteckt",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/plug_state",
+		"payload": "0",
+		"payloadType": "num",
+		"x": 130,
+		"y": 1720,
+		"wires": [
+			[
+				"bd2575a0.0cbce"
+			]
+		]
+	},
+	{
+		"id": "bd2575a0.0cbce",
+		"type": "subflow:5c4ac285.afe6e4",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "LP2",
+		"env": [
+			{
+				"name": "Component-ID",
+				"value": "4",
+				"type": "num"
+			},
+			{
+				"name": "Phase1",
+				"value": "2",
+				"type": "num"
+			},
+			{
+				"name": "Chargepoint-ID",
+				"value": "2",
+				"type": "num"
+			},
+			{
+				"name": "LPNumber",
+				"value": "2",
+				"type": "num"
+			}
+		],
+		"x": 630,
+		"y": 1620,
+		"wires": [
+			[
+				"266b0231.f4db36",
+				"43a92dd0.39da44",
+				"0b69966b365c4536"
+			],
+			[
+				"73ffea7f.199e1c"
+			],
+			[
+				"5316d2315b34de5a"
+			],
+			[]
+		]
+	},
+	{
+		"id": "f1d863d5.a29c18",
+		"type": "ui_gauge",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "Lp2 Leistung",
+		"group": "3fdb380f.aba898",
+		"order": 5,
+		"width": 0,
+		"height": 0,
+		"gtype": "gage",
+		"title": "Leistung",
+		"label": "kW",
+		"format": "{{value/1000 | number:2}}",
+		"min": 0,
+		"max": "22080",
+		"colors": [
+			"#00b500",
+			"#00ff00",
+			"#00b500"
+		],
+		"seg1": "4140",
+		"seg2": "7360",
+		"className": "",
+		"x": 1010,
+		"y": 1740,
+		"wires": []
+	},
+	{
+		"id": "b5d70a0.77f3e78",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"group": "3fdb380f.aba898",
+		"order": 6,
+		"width": 0,
+		"height": 0,
+		"name": "Lp2 Zähler",
+		"label": "Zählerstand",
+		"format": "{{msg.payload | number:3}} kW",
+		"layout": "row-spread",
+		"x": 1010,
+		"y": 1700,
+		"wires": []
+	},
+	{
+		"id": "73ffea7f.199e1c",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "LP2 out",
+		"links": [
+			"3e1bb28f.704a8e"
+		],
+		"x": 775,
+		"y": 1660,
+		"wires": []
+	},
+	{
+		"id": "f3d097a6.b80d18",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"group": "3fdb380f.aba898",
+		"order": 3,
+		"width": 0,
+		"height": 0,
+		"name": "Lp2 Sollphasen",
+		"label": "Soll-Phasen",
+		"format": "{{msg.payload}}",
+		"layout": "row-spread",
+		"x": 1020,
+		"y": 1900,
+		"wires": []
+	},
+	{
+		"id": "89dc41d2.e8c018",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"group": "3fdb380f.aba898",
+		"order": 4,
+		"width": 0,
+		"height": 0,
+		"name": "Lp2 Phasen",
+		"label": "Ist-Phasen",
+		"format": "{{msg.payload}}",
+		"layout": "row-spread",
+		"x": 1010,
+		"y": 1780,
+		"wires": []
+	},
+	{
+		"id": "266b0231.f4db36",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/get\\/counter$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/power$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/phases_in_use$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/currents$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 790,
+		"y": 1720,
+		"wires": [
+			[
+				"b5d70a0.77f3e78"
+			],
+			[
+				"f1d863d5.a29c18"
+			],
+			[
+				"89dc41d2.e8c018"
+			],
+			[
+				"25f6934e60f9b4d6"
+			]
+		],
+		"outputLabels": [
+			"Zählerstand",
+			"Leistung",
+			"",
+			""
+		]
+	},
+	{
+		"id": "f8fb4ebc3ad90445",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "3e039a5092696f5f",
+		"name": "Set Chargepoint",
+		"mode": "link",
+		"links": [
+			"1ef6368267acccec",
+			"4a41415e440b1304",
+			"5aa1d8c69080891b"
+		],
+		"x": 475,
+		"y": 60,
+		"wires": []
+	},
+	{
+		"id": "5aa1d8c69080891b",
+		"type": "link in",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "LP1 Set Current",
+		"links": [
+			"f8fb4ebc3ad90445"
+		],
+		"x": 155,
+		"y": 1200,
+		"wires": [
+			[
+				"bca07e3a.16ff08"
+			]
+		]
+	},
+	{
+		"id": "4a41415e440b1304",
+		"type": "link in",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "LP2 Set",
+		"links": [
+			"f8fb4ebc3ad90445"
+		],
+		"x": 155,
+		"y": 1620,
+		"wires": [
+			[
+				"bd2575a0.0cbce"
+			]
+		]
+	},
+	{
+		"id": "1ef6368267acccec",
+		"type": "link in",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "LP3 Set",
+		"links": [
+			"f8fb4ebc3ad90445"
+		],
+		"x": 155,
+		"y": 2040,
+		"wires": [
+			[
+				"7e5d3fc0.81f4f8"
+			]
+		]
+	},
+	{
+		"id": "426f1381e1bed357",
+		"type": "link in",
+		"z": "92165c72.a5f948",
+		"g": "3e039a5092696f5f",
+		"name": "Out OpenWB",
+		"links": [
+			"0b69966b365c4536",
+			"e6650f13b3cc695a",
+			"ab6610e58dd3eb1c",
+			"cde7317bc368b6b3",
+			"9605f30870c8aa1a",
+			"7a4711d4a689d6d4"
+		],
+		"x": 775,
+		"y": 60,
+		"wires": [
+			[
+				"529ef24e.47a72c"
+			]
+		]
+	},
+	{
+		"id": "e6650f13b3cc695a",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "LP1 Out OpenWB",
+		"mode": "link",
+		"links": [
+			"426f1381e1bed357"
+		],
+		"x": 955,
+		"y": 1240,
+		"wires": []
+	},
+	{
+		"id": "0b69966b365c4536",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "LP2 Out OpenWB",
+		"mode": "link",
+		"links": [
+			"426f1381e1bed357"
+		],
+		"x": 955,
+		"y": 1660,
+		"wires": []
+	},
+	{
+		"id": "ab6610e58dd3eb1c",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "LP3 Out OpenWB",
+		"mode": "link",
+		"links": [
+			"426f1381e1bed357"
+		],
+		"x": 955,
+		"y": 2080,
+		"wires": []
+	},
+	{
+		"id": "8c206019dae8c4f0",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"group": "703fdeb2.7ab84",
+		"order": 9,
+		"width": 0,
+		"height": 0,
+		"name": "",
+		"label": "Lp1 Ströme",
+		"format": "{{msg.payload[0] | number:2}} / {{msg.payload[1] | number:2}} / {{msg.payload[2] | number:2}}",
+		"layout": "row-spread",
+		"className": "",
+		"x": 1010,
+		"y": 1400,
+		"wires": []
+	},
+	{
+		"id": "25f6934e60f9b4d6",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"group": "3fdb380f.aba898",
+		"order": 9,
+		"width": 0,
+		"height": 0,
+		"name": "",
+		"label": "Lp2 Ströme",
+		"format": "{{msg.payload[0] | number:2}} / {{msg.payload[1] | number:2}} / {{msg.payload[2] | number:2}}",
+		"layout": "row-spread",
+		"className": "",
+		"x": 1010,
+		"y": 1820,
+		"wires": []
+	},
+	{
+		"id": "0a303aeb4727c810",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"group": "77ebf297.439d3c",
+		"order": 9,
+		"width": 0,
+		"height": 0,
+		"name": "",
+		"label": "Lp3 Ströme",
+		"format": "{{msg.payload[0] | number:2}} / {{msg.payload[1] | number:2}} / {{msg.payload[2] | number:2}}",
+		"layout": "row-spread",
+		"className": "",
+		"x": 1010,
+		"y": 2240,
+		"wires": []
+	},
+	{
+		"id": "44f4fcadd171fe6d",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/max_phases$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/plug_state$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/current$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/phases_to_use$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 370,
+		"y": 1460,
+		"wires": [
+			[
+				"66502428.6bc2ec"
+			],
+			[
+				"4efd69fa.600b1"
+			],
+			[
+				"b4c0b8e7.95301"
+			],
+			[
+				"aa2ce19d.eaf1e8"
+			]
+		],
+		"outputLabels": [
+			"",
+			"",
+			"Sollstrom",
+			"Sollphasen"
+		]
+	},
+	{
+		"id": "5316d2315b34de5a",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/max_phases$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/plug_state$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/current$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/phases_to_use$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 370,
+		"y": 1880,
+		"wires": [
+			[
+				"30584a7c.88a996"
+			],
+			[
+				"ea8feee.389911"
+			],
+			[
+				"9e477905.67cf68"
+			],
+			[
+				"f3d097a6.b80d18"
+			]
+		],
+		"outputLabels": [
+			"",
+			"",
+			"Sollstrom",
+			"Sollphasen"
+		]
+	},
+	{
+		"id": "61501fd2e18b0ed9",
+		"type": "switch",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "",
+		"property": "topic",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "regex",
+				"v": "\\/max_phases$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/plug_state$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/current$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/phases_to_use$",
+				"vt": "str",
+				"case": false
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 4,
+		"x": 370,
+		"y": 2300,
+		"wires": [
+			[
+				"db2cd204.7325b8"
+			],
+			[
+				"bb9a80f3.6ed8d"
+			],
+			[
+				"f63b330f.c096e"
+			],
+			[
+				"b2b4e4a9.e78cd8"
+			]
+		],
+		"outputLabels": [
+			"",
+			"",
+			"Sollstrom",
+			"Sollphasen"
+		]
+	},
+	{
+		"id": "524bd7697f7a306c",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"group": "9b18f281.ca979",
+		"order": 8,
+		"width": 0,
+		"height": 0,
+		"name": "",
+		"label": "EVU Ströme",
+		"format": "{{msg.payload[0] | number:2}} / {{msg.payload[1] | number:2}} / {{msg.payload[2] | number:2}}",
+		"layout": "row-spread",
+		"className": "",
+		"x": 970,
+		"y": 420,
+		"wires": []
+	},
+	{
+		"id": "cde7317bc368b6b3",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "EVU Out OpenWB",
+		"mode": "link",
+		"links": [
+			"426f1381e1bed357"
+		],
+		"x": 915,
+		"y": 260,
+		"wires": []
+	},
+	{
+		"id": "9605f30870c8aa1a",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "9924f98f.a9ee4",
+		"name": "PV1 Out OpenWB",
+		"mode": "link",
+		"links": [
+			"426f1381e1bed357"
+		],
+		"x": 915,
+		"y": 600,
+		"wires": []
+	},
+	{
+		"id": "7a4711d4a689d6d4",
+		"type": "link out",
+		"z": "92165c72.a5f948",
+		"g": "c8376289.15bc1",
+		"name": "Bat Out OpenWB",
+		"mode": "link",
+		"links": [
+			"426f1381e1bed357"
+		],
+		"x": 915,
+		"y": 860,
+		"wires": []
+	},
+	{
+		"id": "dc8f75f240dcf3b8",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "",
+		"label": "Hausverbrauch L1",
+		"tooltip": "",
+		"group": "9b18f281.ca979",
+		"order": 2,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/Hausverbrauch_p1",
+		"topicType": "str",
+		"min": 0,
+		"max": "10000",
+		"step": "50",
+		"className": "",
+		"x": 370,
+		"y": 300,
+		"wires": [
+			[
+				"90812723.7b3678"
+			]
+		]
+	},
+	{
+		"id": "80ec81072842f306",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "",
+		"label": "Hausverbrauch L2",
+		"tooltip": "",
+		"group": "9b18f281.ca979",
+		"order": 3,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/Hausverbrauch_p2",
+		"topicType": "str",
+		"min": 0,
+		"max": "10000",
+		"step": "50",
+		"className": "",
+		"x": 370,
+		"y": 340,
+		"wires": [
+			[
+				"90812723.7b3678"
+			]
+		]
+	},
+	{
+		"id": "7e693d583a244143",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "",
+		"label": "Hausverbrauch L3",
+		"tooltip": "",
+		"group": "9b18f281.ca979",
+		"order": 4,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/Hausverbrauch_p3",
+		"topicType": "str",
+		"min": 0,
+		"max": "10000",
+		"step": "50",
+		"className": "",
+		"x": 370,
+		"y": 380,
+		"wires": [
+			[
+				"90812723.7b3678"
+			]
+		]
+	},
+	{
+		"id": "50edc6fb6d78740a",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "150 W",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/Hausverbrauch_p1",
+		"payload": "150",
+		"payloadType": "num",
+		"x": 110,
+		"y": 300,
+		"wires": [
+			[
+				"dc8f75f240dcf3b8"
+			]
+		]
+	},
+	{
+		"id": "9145b76c44a9c929",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "150 W",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/Hausverbrauch_p2",
+		"payload": "150",
+		"payloadType": "num",
+		"x": 110,
+		"y": 340,
+		"wires": [
+			[
+				"80ec81072842f306"
+			]
+		]
+	},
+	{
+		"id": "3d8e2d3b4ee89e76",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "ba86e05e.3eb518",
+		"name": "150 W",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/Hausverbrauch_p3",
+		"payload": "150",
+		"payloadType": "num",
+		"x": 110,
+		"y": 380,
+		"wires": [
+			[
+				"7e693d583a244143"
+			]
+		]
+	},
+	{
+		"id": "5c48b79a.d6b918",
+		"type": "mqtt-broker",
+		"name": "openWB-20",
+		"broker": "openwb2-dev.net21",
+		"port": "1883",
+		"clientid": "",
+		"autoConnect": true,
+		"usetls": false,
+		"compatmode": false,
+		"protocolVersion": "4",
+		"keepalive": "60",
+		"cleansession": true,
+		"birthTopic": "",
+		"birthQos": "0",
+		"birthPayload": "",
+		"birthMsg": {},
+		"closeTopic": "",
+		"closeQos": "0",
+		"closePayload": "",
+		"closeMsg": {},
+		"willTopic": "",
+		"willQos": "0",
+		"willPayload": "",
+		"willMsg": {},
+		"sessionExpiry": ""
+	},
+	{
+		"id": "703fdeb2.7ab84",
+		"type": "ui_group",
+		"name": "Lp 1",
+		"tab": "940b8055.1139f",
+		"order": 2,
+		"disp": true,
+		"width": "6",
+		"collapse": true,
+		"className": ""
+	},
+	{
+		"id": "77ebf297.439d3c",
+		"type": "ui_group",
+		"name": "Lp 3",
+		"tab": "940b8055.1139f",
+		"order": 4,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "9b18f281.ca979",
+		"type": "ui_group",
+		"name": "EVU Zähler",
+		"tab": "940b8055.1139f",
+		"order": 1,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "bda74558.0d74e8",
+		"type": "ui_group",
+		"name": "Speicher 1",
+		"tab": "940b8055.1139f",
+		"order": 6,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "1690fa25.a7c9a6",
+		"type": "ui_group",
+		"name": "PV 1",
+		"tab": "940b8055.1139f",
+		"order": 5,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "3fdb380f.aba898",
+		"type": "ui_group",
+		"name": "Lp 2",
+		"tab": "940b8055.1139f",
+		"order": 3,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "940b8055.1139f",
+		"type": "ui_tab",
+		"name": "Simulator 2.0",
+		"icon": "fa-car ",
+		"order": 1,
+		"disabled": false,
+		"hidden": false
+	}
+]
