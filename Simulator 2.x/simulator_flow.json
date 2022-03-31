@@ -4815,7 +4815,7 @@
 		"crontab": "",
 		"once": true,
 		"onceDelay": "1",
-		"topic": "/phasesInUse",
+		"topic": "/max_phases",
 		"payload": "1",
 		"payloadType": "num",
 		"x": 140,
@@ -4845,7 +4845,7 @@
 		"crontab": "",
 		"once": true,
 		"onceDelay": "1",
-		"topic": "/plugStat",
+		"topic": "/plug_state",
 		"payload": "0",
 		"payloadType": "num",
 		"x": 130,
@@ -7010,7 +7010,7 @@
 		"id": "5c48b79a.d6b918",
 		"type": "mqtt-broker",
 		"name": "openWB-20",
-		"broker": "openwb2-dev.net21",
+		"broker": "openwb2",
 		"port": "1883",
 		"clientid": "",
 		"autoConnect": true,
@@ -7031,7 +7031,8 @@
 		"willQos": "0",
 		"willPayload": "",
 		"willMsg": {},
-		"sessionExpiry": ""
+		"sessionExpiry": "",
+		"credentials": {}
 	},
 	{
 		"id": "703fdeb2.7ab84",
