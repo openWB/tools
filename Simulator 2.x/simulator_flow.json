@@ -3210,7 +3210,7 @@
 		"type": "function",
 		"z": "5c4ac285.afe6e4",
 		"name": "Senden der Flow-Daten",
-		"func": "const LPNumber = env.get(\"Component-ID\");\n\nvar chargestat = 0;\nif( flow.get(\"Lp_Strom1\") > 0 || flow.get(\"Lp_Strom2\") > 0 || flow.get(\"Lp_Strom3\") > 0 ){\n    chargestat = 1;\n}\n\nvar statusColor = \"red\";\nvar statusShape = \"ring\";\nif (flow.get(\"Lp_Stecker\") == 1){\n    statusColor = \"green\"\n    if (chargestat == 1){\n        statusShape = \"dot\";\n    }\n}\n\nconst actualPower = parseInt(flow.get(\"Lp_Ladeleistung\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst phasesInUse = flow.get(\"Lp_Phasen\");\nconst phasesToUse = flow.get(\"Lp_Phasenumschaltung\");\nconst phasesEVmax = flow.get(\"Lp_EV_Phasen\");\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW \"+phasesInUse+\"P(\"+phasesEVmax+\"/\"+phasesToUse+\")\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/currents\",\n            payload: [flow.get(\"Lp_Strom1\"), flow.get(\"Lp_Strom2\"), flow.get(\"Lp_Strom3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/voltages\",\n            payload: [flow.get(\"Lp_Spannung1\"), flow.get(\"Lp_Spannung2\"), flow.get(\"Lp_Spannung3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/counter\",\n            payload: parseFloat(flow.get(\"Lp_Zähler\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/plug_state\",\n            payload: flow.get(\"Lp_Stecker\")\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/charge_state\",\n            payload: chargestat\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/phases_in_use\",\n            payload: phasesInUse\n        }\n    ]\n]\n",
+		"func": "const LPNumber = env.get(\"Component-ID\");\n\nvar chargestat = 0;\nif( flow.get(\"Lp_Strom1\") > 0 || flow.get(\"Lp_Strom2\") > 0 || flow.get(\"Lp_Strom3\") > 0 ){\n    chargestat = 1;\n}\n\nvar statusColor = \"red\";\nvar statusShape = \"ring\";\nif (flow.get(\"Lp_Stecker\") == 1){\n    statusColor = \"green\"\n    if (chargestat == 1){\n        statusShape = \"dot\";\n    }\n}\n\nconst actualPower = parseInt(flow.get(\"Lp_Ladeleistung\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst phasesInUse = flow.get(\"Lp_Phasen\");\nconst phasesToUse = flow.get(\"Lp_Phasenumschaltung\");\nconst phasesEVmax = flow.get(\"Lp_EV_Phasen\");\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW \"+phasesInUse+\"P(\"+phasesEVmax+\"/\"+phasesToUse+\")\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/currents\",\n            payload: [flow.get(\"Lp_Strom1\"), flow.get(\"Lp_Strom2\"), flow.get(\"Lp_Strom3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/voltages\",\n            payload: [flow.get(\"Lp_Spannung1\"), flow.get(\"Lp_Spannung2\"), flow.get(\"Lp_Spannung3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/imported\",\n            payload: parseFloat(flow.get(\"Lp_Zähler\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/plug_state\",\n            payload: flow.get(\"Lp_Stecker\")\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/charge_state\",\n            payload: chargestat\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/phases_in_use\",\n            payload: phasesInUse\n        }\n    ]\n]\n",
 		"outputs": 1,
 		"noerr": 0,
 		"initialize": "",
@@ -4113,7 +4113,7 @@
 		"once": true,
 		"onceDelay": "5",
 		"topic": "debug",
-		"payload": "{\t   \"power\": $flowContext(\"Lp_Ladeleistung\"),\t   \"sollstrom\": $flowContext(\"Lp_Sollstrom\"),\t   \"strom\": [\t       $flowContext(\"Lp_Strom1\"),\t       $flowContext(\"Lp_Strom2\"),\t       $flowContext(\"Lp_Strom3\")\t   ],\t   \"spannung\": [\t       $flowContext(\"Lp_Spannung1\"),\t       $flowContext(\"Lp_Spannung2\"),\t       $flowContext(\"Lp_Spannung3\")\t   ],\t   \"lp_phasen\": $flowContext(\"Lp_Phasen\"),\t   \"ev_phasen\": $flowContext(\"Lp_EV_Phasen\"),\t   \"phasenumschaltung\": $flowContext(\"Lp_Phasenumschaltung\"),\t   \"stecker\": $flowContext(\"Lp_Stecker\"),\t   \"frequenz\": $flowContext(\"Lp_Netzfrequenz\"),\t   \"frequenz_norm\": $flowContext(\"Lp_NetzfrequenzNorm\"),\t   \"counter\": $flowContext(\"Lp_Zähler\")\t}",
+		"payload": "{\t   \"power\": $flowContext(\"Lp_Ladeleistung\"),\t   \"sollstrom\": $flowContext(\"Lp_Sollstrom\"),\t   \"strom\": [\t       $flowContext(\"Lp_Strom1\"),\t       $flowContext(\"Lp_Strom2\"),\t       $flowContext(\"Lp_Strom3\")\t   ],\t   \"spannung\": [\t       $flowContext(\"Lp_Spannung1\"),\t       $flowContext(\"Lp_Spannung2\"),\t       $flowContext(\"Lp_Spannung3\")\t   ],\t   \"lp_phasen\": $flowContext(\"Lp_Phasen\"),\t   \"ev_phasen\": $flowContext(\"Lp_EV_Phasen\"),\t   \"phasenumschaltung\": $flowContext(\"Lp_Phasenumschaltung\"),\t   \"stecker\": $flowContext(\"Lp_Stecker\"),\t   \"frequenz\": $flowContext(\"Lp_Netzfrequenz\"),\t   \"frequenz_norm\": $flowContext(\"Lp_NetzfrequenzNorm\"),\t   \"imported\": $flowContext(\"Lp_Zähler\")\t}",
 		"payloadType": "jsonata",
 		"x": 1060,
 		"y": 40,
@@ -4651,7 +4651,7 @@
 		"rules": [
 			{
 				"t": "regex",
-				"v": "\\/get\\/counter$",
+				"v": "\\/get\\/imported$",
 				"vt": "str",
 				"case": false
 			},
@@ -5845,7 +5845,7 @@
 		"rules": [
 			{
 				"t": "regex",
-				"v": "\\/get\\/counter$",
+				"v": "\\/get\\/imported$",
 				"vt": "str",
 				"case": false
 			},
@@ -6358,7 +6358,7 @@
 		"rules": [
 			{
 				"t": "regex",
-				"v": "\\/get\\/counter$",
+				"v": "\\/get\\/imported$",
 				"vt": "str",
 				"case": false
 			},
