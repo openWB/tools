@@ -265,7 +265,7 @@
 		"type": "function",
 		"z": "c5821ca1.ee2da",
 		"name": "Senden der Flow-Daten",
-		"func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"pv\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\n\nvar statusColor = \"green\";\nvar statusShape = \"dot\";\nif(actualPower > -100)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/pv/\" + ComponentId + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/pv/\" + ComponentId + \"/get/counter\",\n            payload: parseInt(flow.get(\"PV_Zähler\").toFixed(0))\n        }\n    ]\n]",
+		"func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"pv\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\n\nvar statusColor = \"green\";\nvar statusShape = \"dot\";\nif(actualPower > -100)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/pv/\" + ComponentId + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/pv/\" + ComponentId + \"/get/exported\",\n            payload: parseInt(flow.get(\"PV_Zähler\").toFixed(0))\n        }\n    ]\n]",
 		"outputs": 1,
 		"noerr": 0,
 		"initialize": "// Code added here will be run once\n// whenever the node is deployed.\nnode.status({\n        fill: \"yellow\",\n        shape: \"ring\",\n        text: \"starting...\"\n    });\n",
