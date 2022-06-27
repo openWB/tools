@@ -2914,7 +2914,7 @@
 			},
 			{
 				"x": 1200,
-				"y": 660,
+				"y": 700,
 				"wires": [
 					{
 						"id": "2254d233.5854e6",
@@ -3210,7 +3210,7 @@
 		"type": "function",
 		"z": "5c4ac285.afe6e4",
 		"name": "Senden der Flow-Daten",
-		"func": "const LPNumber = env.get(\"Component-ID\");\n\nvar chargestat = 0;\nif( flow.get(\"Lp_Strom1\") > 0 || flow.get(\"Lp_Strom2\") > 0 || flow.get(\"Lp_Strom3\") > 0 ){\n    chargestat = 1;\n}\n\nvar statusColor = \"red\";\nvar statusShape = \"ring\";\nif (flow.get(\"Lp_Stecker\") == 1){\n    statusColor = \"green\"\n    if (chargestat == 1){\n        statusShape = \"dot\";\n    }\n}\n\nconst actualPower = parseInt(flow.get(\"Lp_Ladeleistung\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst phasesInUse = flow.get(\"Lp_Phasen\");\nconst phasesToUse = flow.get(\"Lp_Phasenumschaltung\");\nconst phasesEVmax = flow.get(\"Lp_EV_Phasen\");\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW \"+phasesInUse+\"P(\"+phasesEVmax+\"/\"+phasesToUse+\")\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/currents\",\n            payload: [flow.get(\"Lp_Strom1\"), flow.get(\"Lp_Strom2\"), flow.get(\"Lp_Strom3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/voltages\",\n            payload: [flow.get(\"Lp_Spannung1\"), flow.get(\"Lp_Spannung2\"), flow.get(\"Lp_Spannung3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/imported\",\n            payload: parseFloat(flow.get(\"Lp_Zähler\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/plug_state\",\n            payload: flow.get(\"Lp_Stecker\")\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/charge_state\",\n            payload: chargestat\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/phases_in_use\",\n            payload: phasesInUse\n        }\n    ]\n]\n",
+		"func": "const LPNumber = env.get(\"Component-ID\");\n\nvar chargestat = 0;\nif( flow.get(\"Lp_Strom1\") > 0 || flow.get(\"Lp_Strom2\") > 0 || flow.get(\"Lp_Strom3\") > 0 ){\n    chargestat = 1;\n}\n\nvar statusColor = \"red\";\nvar statusShape = \"ring\";\nif (flow.get(\"Lp_Stecker\") == 1){\n    statusColor = \"green\"\n    if (chargestat == 1){\n        statusShape = \"dot\";\n    }\n}\n\nconst actualPower = parseInt(flow.get(\"Lp_Ladeleistung\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst phasesInUse = flow.get(\"Lp_Phasen\");\nconst phasesToUse = flow.get(\"Lp_Phasenumschaltung\");\nconst phasesEVmax = flow.get(\"Lp_EV_Phasen\");\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW \"+phasesInUse+\"P(\"+phasesEVmax+\"/\"+phasesToUse+\")\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/currents\",\n            payload: [flow.get(\"Lp_Strom1\"), flow.get(\"Lp_Strom2\"), flow.get(\"Lp_Strom3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/voltages\",\n            payload: [flow.get(\"Lp_Spannung1\"), flow.get(\"Lp_Spannung2\"), flow.get(\"Lp_Spannung3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/imported\",\n            payload: parseFloat(flow.get(\"Lp_Zähler_laden\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/exported\",\n            payload: parseFloat(flow.get(\"Lp_Zähler_entladen\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/plug_state\",\n            payload: flow.get(\"Lp_Stecker\")\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/charge_state\",\n            payload: chargestat\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/phases_in_use\",\n            payload: phasesInUse\n        }\n    ]\n]\n",
 		"outputs": 1,
 		"noerr": 0,
 		"initialize": "",
@@ -3226,8 +3226,8 @@
 		"id": "16b7648f.04f14b",
 		"type": "switch",
 		"z": "5c4ac285.afe6e4",
-		"name": "Zähler gesetzt?",
-		"property": "Lp_Zähler",
+		"name": "Zähler laden gesetzt?",
+		"property": "Lp_Zähler_laden",
 		"propertyType": "flow",
 		"rules": [
 			{
@@ -3237,7 +3237,7 @@
 		"checkall": "true",
 		"repair": false,
 		"outputs": 1,
-		"x": 380,
+		"x": 400,
 		"y": 340,
 		"wires": [
 			[
@@ -3249,11 +3249,11 @@
 		"id": "898e546f.9440e",
 		"type": "change",
 		"z": "5c4ac285.afe6e4",
-		"name": "Zähler init",
+		"name": "Zähler laden init",
 		"rules": [
 			{
 				"t": "set",
-				"p": "Lp_Zähler",
+				"p": "Lp_Zähler_laden",
 				"pt": "flow",
 				"to": "0",
 				"tot": "num"
@@ -3264,7 +3264,7 @@
 		"from": "",
 		"to": "",
 		"reg": false,
-		"x": 580,
+		"x": 640,
 		"y": 340,
 		"wires": [
 			[]
@@ -3293,7 +3293,8 @@
 			[
 				"16b7648f.04f14b",
 				"4351720d.b31ed4",
-				"58ec8187c6755198"
+				"58ec8187c6755198",
+				"4d37676232ebd1a7"
 			]
 		]
 	},
@@ -3317,10 +3318,10 @@
 		"to": "",
 		"reg": false,
 		"x": 740,
-		"y": 720,
+		"y": 760,
 		"wires": [
 			[
-				"eae3cd53.403d28"
+				"bd7cd25d6f0276eb"
 			]
 		],
 		"info": "$number(payload)*(timeInterval/1000)/3600/1000"
@@ -3329,20 +3330,20 @@
 		"id": "eae3cd53.403d28",
 		"type": "change",
 		"z": "5c4ac285.afe6e4",
-		"name": "Zähler aktualisieren",
+		"name": "Zähler laden aktualisieren",
 		"rules": [
 			{
 				"t": "set",
-				"p": "Lp_Zähler",
+				"p": "Lp_Zähler_laden",
 				"pt": "flow",
-				"to": "payload/1000+$flowContext(\"Lp_Zähler\")",
+				"to": "payload/1000+$flowContext(\"Lp_Zähler_laden\")",
 				"tot": "jsonata"
 			},
 			{
 				"t": "set",
 				"p": "payload",
 				"pt": "msg",
-				"to": "Lp_Zähler",
+				"to": "Lp_Zähler_laden",
 				"tot": "flow"
 			}
 		],
@@ -3351,8 +3352,8 @@
 		"from": "",
 		"to": "",
 		"reg": false,
-		"x": 950,
-		"y": 720,
+		"x": 1150,
+		"y": 760,
 		"wires": [
 			[
 				"d28d6c2d.ccd198"
@@ -3395,7 +3396,7 @@
 		"to": "",
 		"reg": false,
 		"x": 740,
-		"y": 660,
+		"y": 700,
 		"wires": [
 			[
 				"65aa4e7c.604d5"
@@ -3420,7 +3421,7 @@
 		"payload": "Lp_Sollstrom",
 		"payloadType": "flow",
 		"x": 170,
-		"y": 480,
+		"y": 520,
 		"wires": [
 			[
 				"5db82d46.a42464"
@@ -3468,7 +3469,7 @@
 		"to": "",
 		"reg": false,
 		"x": 740,
-		"y": 600,
+		"y": 640,
 		"wires": [
 			[
 				"2254d233.5854e6"
@@ -3482,7 +3483,7 @@
 		"name": "Spannungen",
 		"info": "",
 		"x": 150,
-		"y": 600,
+		"y": 640,
 		"wires": []
 	},
 	{
@@ -3492,7 +3493,7 @@
 		"name": "Ströme",
 		"info": "",
 		"x": 130,
-		"y": 540,
+		"y": 580,
 		"wires": []
 	},
 	{
@@ -3502,7 +3503,7 @@
 		"name": "Leistung",
 		"info": "",
 		"x": 140,
-		"y": 660,
+		"y": 700,
 		"wires": []
 	},
 	{
@@ -3528,7 +3529,7 @@
 		"repair": false,
 		"outputs": 2,
 		"x": 370,
-		"y": 480,
+		"y": 520,
 		"wires": [
 			[
 				"c4b09682.906f4"
@@ -3558,7 +3559,7 @@
 		"to": "",
 		"reg": false,
 		"x": 580,
-		"y": 480,
+		"y": 520,
 		"wires": [
 			[
 				"702fd2d4.54ae6c"
@@ -3572,7 +3573,7 @@
 		"name": "Zählerstand",
 		"info": "",
 		"x": 150,
-		"y": 720,
+		"y": 760,
 		"wires": []
 	},
 	{
@@ -3585,7 +3586,7 @@
 		"inte": "false",
 		"property": "payload",
 		"x": 370,
-		"y": 600,
+		"y": 640,
 		"wires": [
 			[
 				"5944aff0.c01d48"
@@ -3604,7 +3605,7 @@
 		"mult": "single",
 		"reduce": false,
 		"x": 560,
-		"y": 540,
+		"y": 580,
 		"wires": [
 			[
 				"62f55674.8ce028"
@@ -3623,7 +3624,7 @@
 		"mult": "single",
 		"reduce": false,
 		"x": 540,
-		"y": 600,
+		"y": 640,
 		"wires": [
 			[
 				"43c64905.ca1d68"
@@ -3656,7 +3657,7 @@
 		"finalize": "",
 		"libs": [],
 		"x": 740,
-		"y": 540,
+		"y": 580,
 		"wires": [
 			[
 				"d8be3486.74562",
@@ -3673,7 +3674,7 @@
 		"name": "Netzfrequenz",
 		"info": "",
 		"x": 150,
-		"y": 780,
+		"y": 860,
 		"wires": []
 	},
 	{
@@ -3686,7 +3687,7 @@
 		"inte": "false",
 		"property": "payload",
 		"x": 360,
-		"y": 780,
+		"y": 860,
 		"wires": [
 			[
 				"25ba0874.01329"
@@ -3705,7 +3706,7 @@
 		"mult": "single",
 		"reduce": false,
 		"x": 560,
-		"y": 780,
+		"y": 860,
 		"wires": [
 			[
 				"a8b4d76e.b28828"
@@ -3732,7 +3733,7 @@
 		"to": "",
 		"reg": false,
 		"x": 780,
-		"y": 780,
+		"y": 860,
 		"wires": [
 			[]
 		]
@@ -3845,7 +3846,7 @@
 		"to": "",
 		"reg": false,
 		"x": 380,
-		"y": 380,
+		"y": 420,
 		"wires": [
 			[]
 		]
@@ -3911,7 +3912,7 @@
 		"to": "",
 		"reg": false,
 		"x": 980,
-		"y": 440,
+		"y": 480,
 		"wires": [
 			[]
 		]
@@ -3952,7 +3953,7 @@
 		"to": "",
 		"reg": false,
 		"x": 980,
-		"y": 520,
+		"y": 560,
 		"wires": [
 			[]
 		]
@@ -3993,7 +3994,7 @@
 		"to": "",
 		"reg": false,
 		"x": 980,
-		"y": 480,
+		"y": 520,
 		"wires": [
 			[]
 		]
@@ -4020,7 +4021,7 @@
 		"repeatTimeout": false,
 		"name": "Zeit zwischen den Nachrichten messen",
 		"x": 460,
-		"y": 720,
+		"y": 760,
 		"wires": [
 			[
 				"5aa7e41e.77b01c"
@@ -4089,7 +4090,7 @@
 		"to": "",
 		"reg": false,
 		"x": 430,
-		"y": 420,
+		"y": 460,
 		"wires": [
 			[]
 		]
@@ -4113,12 +4114,129 @@
 		"once": true,
 		"onceDelay": "5",
 		"topic": "debug",
-		"payload": "{\t   \"power\": $flowContext(\"Lp_Ladeleistung\"),\t   \"sollstrom\": $flowContext(\"Lp_Sollstrom\"),\t   \"strom\": [\t       $flowContext(\"Lp_Strom1\"),\t       $flowContext(\"Lp_Strom2\"),\t       $flowContext(\"Lp_Strom3\")\t   ],\t   \"spannung\": [\t       $flowContext(\"Lp_Spannung1\"),\t       $flowContext(\"Lp_Spannung2\"),\t       $flowContext(\"Lp_Spannung3\")\t   ],\t   \"lp_phasen\": $flowContext(\"Lp_Phasen\"),\t   \"ev_phasen\": $flowContext(\"Lp_EV_Phasen\"),\t   \"phasenumschaltung\": $flowContext(\"Lp_Phasenumschaltung\"),\t   \"stecker\": $flowContext(\"Lp_Stecker\"),\t   \"frequenz\": $flowContext(\"Lp_Netzfrequenz\"),\t   \"frequenz_norm\": $flowContext(\"Lp_NetzfrequenzNorm\"),\t   \"imported\": $flowContext(\"Lp_Zähler\")\t}",
+		"payload": "{\t   \"power\": $flowContext(\"Lp_Ladeleistung\"),\t   \"sollstrom\": $flowContext(\"Lp_Sollstrom\"),\t   \"strom\": [\t       $flowContext(\"Lp_Strom1\"),\t       $flowContext(\"Lp_Strom2\"),\t       $flowContext(\"Lp_Strom3\")\t   ],\t   \"spannung\": [\t       $flowContext(\"Lp_Spannung1\"),\t       $flowContext(\"Lp_Spannung2\"),\t       $flowContext(\"Lp_Spannung3\")\t   ],\t   \"lp_phasen\": $flowContext(\"Lp_Phasen\"),\t   \"ev_phasen\": $flowContext(\"Lp_EV_Phasen\"),\t   \"phasenumschaltung\": $flowContext(\"Lp_Phasenumschaltung\"),\t   \"stecker\": $flowContext(\"Lp_Stecker\"),\t   \"frequenz\": $flowContext(\"Lp_Netzfrequenz\"),\t   \"frequenz_norm\": $flowContext(\"Lp_NetzfrequenzNorm\"),\t   \"imported\": $flowContext(\"Lp_Zähler_laden\"),\t   \"exported\": $flowContext(\"Lp_Zähler_entladen\")\t}",
 		"payloadType": "jsonata",
 		"x": 1060,
 		"y": 40,
 		"wires": [
 			[]
+		]
+	},
+	{
+		"id": "4d37676232ebd1a7",
+		"type": "switch",
+		"z": "5c4ac285.afe6e4",
+		"name": "Zähler entladen gesetzt?",
+		"property": "Lp_Zähler_entladen",
+		"propertyType": "flow",
+		"rules": [
+			{
+				"t": "null"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 1,
+		"x": 410,
+		"y": 380,
+		"wires": [
+			[
+				"8c6c68173df4bf12"
+			]
+		]
+	},
+	{
+		"id": "8c6c68173df4bf12",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "Zähler entladen init",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Zähler_entladen",
+				"pt": "flow",
+				"to": "0",
+				"tot": "num"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 650,
+		"y": 380,
+		"wires": [
+			[]
+		]
+	},
+	{
+		"id": "bd7cd25d6f0276eb",
+		"type": "switch",
+		"z": "5c4ac285.afe6e4",
+		"name": "",
+		"property": "payload",
+		"propertyType": "msg",
+		"rules": [
+			{
+				"t": "gte",
+				"v": "0",
+				"vt": "num"
+			},
+			{
+				"t": "else"
+			}
+		],
+		"checkall": "true",
+		"repair": false,
+		"outputs": 2,
+		"x": 930,
+		"y": 760,
+		"wires": [
+			[
+				"eae3cd53.403d28"
+			],
+			[
+				"733f65e137ec70e1"
+			]
+		],
+		"outputLabels": [
+			"laden",
+			"entladen"
+		]
+	},
+	{
+		"id": "733f65e137ec70e1",
+		"type": "change",
+		"z": "5c4ac285.afe6e4",
+		"name": "Zähler entladen aktualisieren",
+		"rules": [
+			{
+				"t": "set",
+				"p": "Lp_Zähler_entladen",
+				"pt": "flow",
+				"to": "payload/-1000+$flowContext(\"Lp_Zähler_entladen\")",
+				"tot": "jsonata"
+			},
+			{
+				"t": "set",
+				"p": "payload",
+				"pt": "msg",
+				"to": "Lp_Zähler_entladen",
+				"tot": "flow"
+			}
+		],
+		"action": "",
+		"property": "",
+		"from": "",
+		"to": "",
+		"reg": false,
+		"x": 1160,
+		"y": 800,
+		"wires": [
+			[
+				"d28d6c2d.ccd198"
+			]
 		]
 	},
 	{
@@ -4157,12 +4275,13 @@
 			"ed32a789.f4f798",
 			"8c206019dae8c4f0",
 			"44f4fcadd171fe6d",
-			"1e68cfab.5aab5"
+			"1e68cfab.5aab5",
+			"3c77c4ed766b07a5"
 		],
 		"x": 14,
 		"y": 1144,
-		"w": 1112,
-		"h": 377
+		"w": 1152,
+		"h": 417
 	},
 	{
 		"id": "9924f98f.a9ee4",
@@ -4219,12 +4338,13 @@
 			"711106cc.96ed18",
 			"0a303aeb4727c810",
 			"268be22f.974e1e",
-			"61501fd2e18b0ed9"
+			"61501fd2e18b0ed9",
+			"2397a2d2e13d5c0a"
 		],
 		"x": 14,
-		"y": 1984,
-		"w": 1112,
-		"h": 377
+		"y": 2064,
+		"w": 1152,
+		"h": 417
 	},
 	{
 		"id": "ba86e05e.3eb518",
@@ -4325,12 +4445,13 @@
 			"0b69966b365c4536",
 			"43a92dd0.39da44",
 			"25f6934e60f9b4d6",
-			"5316d2315b34de5a"
+			"5316d2315b34de5a",
+			"cbdca721f944522a"
 		],
 		"x": 14,
-		"y": 1564,
-		"w": 1112,
-		"h": 377
+		"y": 1604,
+		"w": 1152,
+		"h": 417
 	},
 	{
 		"id": "3e039a5092696f5f",
@@ -4540,11 +4661,12 @@
 		"order": 6,
 		"width": 0,
 		"height": 0,
-		"name": "Lp1 Zähler",
-		"label": "Zählerstand",
+		"name": "Lp1 Zähler Ladung",
+		"label": "Zählerstand laden",
 		"format": "{{msg.payload | number:3}} kW",
 		"layout": "row-spread",
-		"x": 1010,
+		"className": "",
+		"x": 1030,
 		"y": 1280,
 		"wires": []
 	},
@@ -4563,7 +4685,7 @@
 		"layout": "row-spread",
 		"className": "",
 		"x": 1020,
-		"y": 1440,
+		"y": 1480,
 		"wires": []
 	},
 	{
@@ -4591,7 +4713,7 @@
 		"seg2": "7360",
 		"className": "",
 		"x": 1010,
-		"y": 1320,
+		"y": 1360,
 		"wires": []
 	},
 	{
@@ -4657,6 +4779,12 @@
 			},
 			{
 				"t": "regex",
+				"v": "\\/get\\/exported$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
 				"v": "\\/get\\/power$",
 				"vt": "str",
 				"case": false
@@ -4676,12 +4804,15 @@
 		],
 		"checkall": "true",
 		"repair": false,
-		"outputs": 4,
-		"x": 790,
+		"outputs": 5,
+		"x": 810,
 		"y": 1300,
 		"wires": [
 			[
 				"bcde68d8.fbde58"
+			],
+			[
+				"3c77c4ed766b07a5"
 			],
 			[
 				"c2212cf2.e2bfe"
@@ -4694,7 +4825,8 @@
 			]
 		],
 		"outputLabels": [
-			"Zählerstand",
+			"Zählerstand laden",
+			"Zählerstand entladen",
 			"Leistung",
 			"aktive Phasen",
 			"Ströme"
@@ -4714,7 +4846,7 @@
 		"format": "{{msg.payload}} A",
 		"layout": "row-spread",
 		"x": 1020,
-		"y": 2280,
+		"y": 2400,
 		"wires": []
 	},
 	{
@@ -4754,7 +4886,7 @@
 		"topicType": "str",
 		"className": "",
 		"x": 590,
-		"y": 2200,
+		"y": 2280,
 		"wires": [
 			[
 				"7e5d3fc0.81f4f8"
@@ -4789,7 +4921,7 @@
 		"animate": true,
 		"className": "",
 		"x": 570,
-		"y": 2260,
+		"y": 2340,
 		"wires": [
 			[
 				"7e5d3fc0.81f4f8"
@@ -4819,7 +4951,7 @@
 		"payload": "1",
 		"payloadType": "num",
 		"x": 140,
-		"y": 2100,
+		"y": 2180,
 		"wires": [
 			[
 				"7e5d3fc0.81f4f8"
@@ -4849,7 +4981,7 @@
 		"payload": "0",
 		"payloadType": "num",
 		"x": 130,
-		"y": 2140,
+		"y": 2220,
 		"wires": [
 			[
 				"7e5d3fc0.81f4f8"
@@ -4885,7 +5017,7 @@
 			}
 		],
 		"x": 630,
-		"y": 2040,
+		"y": 2120,
 		"wires": [
 			[
 				"b9d330a1.5a",
@@ -4926,7 +5058,7 @@
 		"seg2": "7360",
 		"className": "",
 		"x": 1010,
-		"y": 2160,
+		"y": 2280,
 		"wires": []
 	},
 	{
@@ -4938,12 +5070,13 @@
 		"order": 6,
 		"width": 0,
 		"height": 0,
-		"name": "Lp3 Zähler",
-		"label": "Zählerstand",
+		"name": "Lp3 Zähler Ladung",
+		"label": "Zählerstand laden",
 		"format": "{{msg.payload | number:3}} kW",
 		"layout": "row-spread",
-		"x": 1010,
-		"y": 2120,
+		"className": "",
+		"x": 1030,
+		"y": 2200,
 		"wires": []
 	},
 	{
@@ -5567,7 +5700,7 @@
 			"3e1bb28f.704a8e"
 		],
 		"x": 775,
-		"y": 2080,
+		"y": 2160,
 		"wires": []
 	},
 	{
@@ -5607,7 +5740,7 @@
 		"rules": [
 			{
 				"t": "regex",
-				"v": "\\/counter$",
+				"v": "\\/exported$",
 				"vt": "str",
 				"case": false
 			},
@@ -5780,7 +5913,7 @@
 		"layout": "row-spread",
 		"className": "",
 		"x": 1020,
-		"y": 1480,
+		"y": 1520,
 		"wires": []
 	},
 	{
@@ -5797,7 +5930,7 @@
 		"format": "{{msg.payload}}",
 		"layout": "row-spread",
 		"x": 1020,
-		"y": 2320,
+		"y": 2440,
 		"wires": []
 	},
 	{
@@ -5814,7 +5947,7 @@
 		"format": "{{msg.payload}}",
 		"layout": "row-spread",
 		"x": 1010,
-		"y": 1360,
+		"y": 1400,
 		"wires": []
 	},
 	{
@@ -5831,7 +5964,7 @@
 		"format": "{{msg.payload}}",
 		"layout": "row-spread",
 		"x": 1010,
-		"y": 2200,
+		"y": 2320,
 		"wires": []
 	},
 	{
@@ -5846,6 +5979,12 @@
 			{
 				"t": "regex",
 				"v": "\\/get\\/imported$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/exported$",
 				"vt": "str",
 				"case": false
 			},
@@ -5870,12 +6009,15 @@
 		],
 		"checkall": "true",
 		"repair": false,
-		"outputs": 4,
-		"x": 790,
-		"y": 2140,
+		"outputs": 5,
+		"x": 810,
+		"y": 2220,
 		"wires": [
 			[
 				"e25c1f48.8f5e18"
+			],
+			[
+				"2397a2d2e13d5c0a"
 			],
 			[
 				"c08ace1e.18cd08"
@@ -5888,10 +6030,11 @@
 			]
 		],
 		"outputLabels": [
-			"Zählerstand",
+			"Zählerstand laden",
+			"Zählerstand entladen",
 			"Leistung",
-			"",
-			""
+			"aktive Phasen",
+			"Ströme"
 		]
 	},
 	{
@@ -5976,7 +6119,7 @@
 		"statusVal": "",
 		"statusType": "auto",
 		"x": 1010,
-		"y": 1620,
+		"y": 1660,
 		"wires": []
 	},
 	{
@@ -5993,7 +6136,7 @@
 		"statusVal": "",
 		"statusType": "auto",
 		"x": 1010,
-		"y": 2040,
+		"y": 2120,
 		"wires": []
 	},
 	{
@@ -6068,7 +6211,7 @@
 		"format": "{{msg.payload}} A",
 		"layout": "row-spread",
 		"x": 1020,
-		"y": 1860,
+		"y": 1940,
 		"wires": []
 	},
 	{
@@ -6108,7 +6251,7 @@
 		"topicType": "str",
 		"className": "",
 		"x": 590,
-		"y": 1780,
+		"y": 1820,
 		"wires": [
 			[
 				"bd2575a0.0cbce"
@@ -6143,7 +6286,7 @@
 		"animate": true,
 		"className": "",
 		"x": 570,
-		"y": 1840,
+		"y": 1880,
 		"wires": [
 			[
 				"bd2575a0.0cbce"
@@ -6173,7 +6316,7 @@
 		"payload": "2",
 		"payloadType": "num",
 		"x": 140,
-		"y": 1680,
+		"y": 1720,
 		"wires": [
 			[
 				"bd2575a0.0cbce"
@@ -6203,7 +6346,7 @@
 		"payload": "0",
 		"payloadType": "num",
 		"x": 130,
-		"y": 1720,
+		"y": 1760,
 		"wires": [
 			[
 				"bd2575a0.0cbce"
@@ -6239,7 +6382,7 @@
 			}
 		],
 		"x": 630,
-		"y": 1620,
+		"y": 1660,
 		"wires": [
 			[
 				"266b0231.f4db36",
@@ -6280,7 +6423,7 @@
 		"seg2": "7360",
 		"className": "",
 		"x": 1010,
-		"y": 1740,
+		"y": 1820,
 		"wires": []
 	},
 	{
@@ -6292,12 +6435,13 @@
 		"order": 6,
 		"width": 0,
 		"height": 0,
-		"name": "Lp2 Zähler",
-		"label": "Zählerstand",
+		"name": "Lp2 Zähler Ladung",
+		"label": "Zählerstand laden",
 		"format": "{{msg.payload | number:3}} kW",
 		"layout": "row-spread",
-		"x": 1010,
-		"y": 1700,
+		"className": "",
+		"x": 1030,
+		"y": 1740,
 		"wires": []
 	},
 	{
@@ -6310,7 +6454,7 @@
 			"3e1bb28f.704a8e"
 		],
 		"x": 775,
-		"y": 1660,
+		"y": 1700,
 		"wires": []
 	},
 	{
@@ -6327,7 +6471,7 @@
 		"format": "{{msg.payload}}",
 		"layout": "row-spread",
 		"x": 1020,
-		"y": 1900,
+		"y": 1980,
 		"wires": []
 	},
 	{
@@ -6344,7 +6488,7 @@
 		"format": "{{msg.payload}}",
 		"layout": "row-spread",
 		"x": 1010,
-		"y": 1780,
+		"y": 1860,
 		"wires": []
 	},
 	{
@@ -6359,6 +6503,12 @@
 			{
 				"t": "regex",
 				"v": "\\/get\\/imported$",
+				"vt": "str",
+				"case": false
+			},
+			{
+				"t": "regex",
+				"v": "\\/get\\/exported$",
 				"vt": "str",
 				"case": false
 			},
@@ -6383,12 +6533,15 @@
 		],
 		"checkall": "true",
 		"repair": false,
-		"outputs": 4,
-		"x": 790,
-		"y": 1720,
+		"outputs": 5,
+		"x": 810,
+		"y": 1760,
 		"wires": [
 			[
 				"b5d70a0.77f3e78"
+			],
+			[
+				"cbdca721f944522a"
 			],
 			[
 				"f1d863d5.a29c18"
@@ -6401,10 +6554,11 @@
 			]
 		],
 		"outputLabels": [
-			"Zählerstand",
+			"Zählerstand laden",
+			"Zählerstand entladen",
 			"Leistung",
-			"",
-			""
+			"aktive Phasen",
+			"Ströme"
 		]
 	},
 	{
@@ -6450,7 +6604,7 @@
 			"f8fb4ebc3ad90445"
 		],
 		"x": 155,
-		"y": 1620,
+		"y": 1660,
 		"wires": [
 			[
 				"bd2575a0.0cbce"
@@ -6467,7 +6621,7 @@
 			"f8fb4ebc3ad90445"
 		],
 		"x": 155,
-		"y": 2040,
+		"y": 2120,
 		"wires": [
 			[
 				"7e5d3fc0.81f4f8"
@@ -6521,7 +6675,7 @@
 			"426f1381e1bed357"
 		],
 		"x": 955,
-		"y": 1660,
+		"y": 1700,
 		"wires": []
 	},
 	{
@@ -6535,7 +6689,7 @@
 			"426f1381e1bed357"
 		],
 		"x": 955,
-		"y": 2080,
+		"y": 2160,
 		"wires": []
 	},
 	{
@@ -6553,7 +6707,7 @@
 		"layout": "row-spread",
 		"className": "",
 		"x": 1010,
-		"y": 1400,
+		"y": 1440,
 		"wires": []
 	},
 	{
@@ -6571,7 +6725,7 @@
 		"layout": "row-spread",
 		"className": "",
 		"x": 1010,
-		"y": 1820,
+		"y": 1900,
 		"wires": []
 	},
 	{
@@ -6589,7 +6743,7 @@
 		"layout": "row-spread",
 		"className": "",
 		"x": 1010,
-		"y": 2240,
+		"y": 2360,
 		"wires": []
 	},
 	{
@@ -6690,7 +6844,7 @@
 		"repair": false,
 		"outputs": 4,
 		"x": 370,
-		"y": 1880,
+		"y": 1920,
 		"wires": [
 			[
 				"30584a7c.88a996"
@@ -6750,7 +6904,7 @@
 		"repair": false,
 		"outputs": 4,
 		"x": 370,
-		"y": 2300,
+		"y": 2380,
 		"wires": [
 			[
 				"db2cd204.7325b8"
@@ -7005,6 +7159,60 @@
 				"7e693d583a244143"
 			]
 		]
+	},
+	{
+		"id": "3c77c4ed766b07a5",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"group": "703fdeb2.7ab84",
+		"order": 6,
+		"width": 0,
+		"height": 0,
+		"name": "Lp1 Zähler Entladung",
+		"label": "Zählerstand entladen",
+		"format": "{{msg.payload | number:3}} kW",
+		"layout": "row-spread",
+		"className": "",
+		"x": 1040,
+		"y": 1320,
+		"wires": []
+	},
+	{
+		"id": "cbdca721f944522a",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"group": "3fdb380f.aba898",
+		"order": 6,
+		"width": 0,
+		"height": 0,
+		"name": "Lp2 Zähler Entladung",
+		"label": "Zählerstand entladen",
+		"format": "{{msg.payload | number:3}} kW",
+		"layout": "row-spread",
+		"className": "",
+		"x": 1040,
+		"y": 1780,
+		"wires": []
+	},
+	{
+		"id": "2397a2d2e13d5c0a",
+		"type": "ui_text",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"group": "77ebf297.439d3c",
+		"order": 6,
+		"width": 0,
+		"height": 0,
+		"name": "Lp3 Zähler Entladung",
+		"label": "Zählerstand entladen",
+		"format": "{{msg.payload | number:3}} kW",
+		"layout": "row-spread",
+		"className": "",
+		"x": 1040,
+		"y": 2240,
+		"wires": []
 	},
 	{
 		"id": "5c48b79a.d6b918",
