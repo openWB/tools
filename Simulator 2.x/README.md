@@ -4,7 +4,7 @@ Die Umgebung besteht aus einem Zähler (muss als "EVU" in der Hierarchie eingeri
 einem PV-Modul, einem Batteriespeicher sowie drei Ladepunkten.
 
 ## Voraussetzungen
-- Node-Red (getestet mit 2.1.6)
+- Node-Red (getestet mit 2.2.2)
 - node-red-contrib-interval-length
 - node-red-contrib-pid
 - node-red-dashboard
