@@ -2903,7 +2903,7 @@
 		],
 		"out": [
 			{
-				"x": 580,
+				"x": 620,
 				"y": 40,
 				"wires": [
 					{
@@ -2921,19 +2921,11 @@
 						"port": 0
 					},
 					{
-						"id": "9812193e.da699",
-						"port": 0
-					},
-					{
-						"id": "9da41a6e.e045a8",
-						"port": 0
-					},
-					{
-						"id": "29875bfa.f89a0c",
-						"port": 0
-					},
-					{
 						"id": "58ec8187c6755198",
+						"port": 0
+					},
+					{
+						"id": "71b196bb372367ab",
 						"port": 0
 					}
 				]
@@ -2965,7 +2957,7 @@
 				]
 			},
 			{
-				"x": 1180,
+				"x": 1210,
 				"y": 40,
 				"wires": [
 					{
@@ -3650,7 +3642,7 @@
 		"type": "function",
 		"z": "5c4ac285.afe6e4",
 		"name": "",
-		"func": "const phasesEVmax = flow.get(\"Lp_EV_Phasen\");\nconst phasesLPmax = flow.get(\"Lp_Phasenumschaltung\");\nvar phasesInUse = phasesEVmax;\nif(phasesEVmax > phasesLPmax){\n    phasesInUse = phasesLPmax;\n}\n\nconst phase1 = env.get(\"Phase1\");\nvar phaseCurrents = [0,0,0];\n\nswitch (phase1) {\n    case 1:\n        phaseCurrents[0] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[1] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[2] = msg.payload;\n        break;\n    case 2:\n        phaseCurrents[1] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[2] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[0] = msg.payload;\n        break;\n    case 3:\n        phaseCurrents[2] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[0] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[1] = msg.payload;\n        break;\n}\n\nflow.set(\"Lp_Strom1\", phaseCurrents[0]);\nflow.set(\"Lp_Strom2\", phaseCurrents[1]);\nflow.set(\"Lp_Strom3\", phaseCurrents[2]);\nflow.set(\"Lp_Phasen\", phasesInUse);\n\nreturn msg;\n",
+		"func": "const phasesEVmax = flow.get(\"Lp_EV_Phasen\");\nconst phasesLPmax = flow.get(\"Lp_Phasenumschaltung\");\nvar phasesInUse = phasesEVmax;\nif(phasesEVmax > phasesLPmax){\n    phasesInUse = phasesLPmax;\n}\n\nvar phaseCurrents = [0,0,0];\n\nphaseCurrents[0] = msg.payload;\nif( phasesInUse > 1 )\n    phaseCurrents[1] = msg.payload;\nif( phasesInUse > 2 )\n    phaseCurrents[2] = msg.payload;\n\nflow.set(\"Lp_Strom1\", phaseCurrents[0]);\nflow.set(\"Lp_Strom2\", phaseCurrents[1]);\nflow.set(\"Lp_Strom3\", phaseCurrents[2]);\nflow.set(\"Lp_Phasen\", phasesInUse);\n\nreturn msg;\n",
 		"outputs": 1,
 		"noerr": 0,
 		"initialize": "",
@@ -3661,9 +3653,7 @@
 		"wires": [
 			[
 				"d8be3486.74562",
-				"29875bfa.f89a0c",
-				"9da41a6e.e045a8",
-				"9812193e.da699"
+				"71b196bb372367ab"
 			]
 		]
 	},
@@ -3872,129 +3862,6 @@
 		"reg": false,
 		"x": 800,
 		"y": 200,
-		"wires": [
-			[]
-		]
-	},
-	{
-		"id": "29875bfa.f89a0c",
-		"type": "change",
-		"z": "5c4ac285.afe6e4",
-		"name": "",
-		"rules": [
-			{
-				"t": "set",
-				"p": "topic",
-				"pt": "msg",
-				"to": "/chargepoint/#/get/current_p1",
-				"tot": "str"
-			},
-			{
-				"t": "change",
-				"p": "topic",
-				"pt": "msg",
-				"from": "#",
-				"fromt": "str",
-				"to": "Component-ID",
-				"tot": "env"
-			},
-			{
-				"t": "set",
-				"p": "payload",
-				"pt": "msg",
-				"to": "$flowContext(\"Lp_Strom1\")",
-				"tot": "jsonata"
-			}
-		],
-		"action": "",
-		"property": "",
-		"from": "",
-		"to": "",
-		"reg": false,
-		"x": 980,
-		"y": 480,
-		"wires": [
-			[]
-		]
-	},
-	{
-		"id": "9812193e.da699",
-		"type": "change",
-		"z": "5c4ac285.afe6e4",
-		"name": "",
-		"rules": [
-			{
-				"t": "set",
-				"p": "topic",
-				"pt": "msg",
-				"to": "/chargepoint/#/get/current_p3",
-				"tot": "str"
-			},
-			{
-				"t": "change",
-				"p": "topic",
-				"pt": "msg",
-				"from": "#",
-				"fromt": "str",
-				"to": "Component-ID",
-				"tot": "env"
-			},
-			{
-				"t": "set",
-				"p": "payload",
-				"pt": "msg",
-				"to": "$flowContext(\"Lp_Strom3\")",
-				"tot": "jsonata"
-			}
-		],
-		"action": "",
-		"property": "",
-		"from": "",
-		"to": "",
-		"reg": false,
-		"x": 980,
-		"y": 560,
-		"wires": [
-			[]
-		]
-	},
-	{
-		"id": "9da41a6e.e045a8",
-		"type": "change",
-		"z": "5c4ac285.afe6e4",
-		"name": "",
-		"rules": [
-			{
-				"t": "set",
-				"p": "topic",
-				"pt": "msg",
-				"to": "/chargepoint/#/get/current_p2",
-				"tot": "str"
-			},
-			{
-				"t": "change",
-				"p": "topic",
-				"pt": "msg",
-				"from": "#",
-				"fromt": "str",
-				"to": "Component-ID",
-				"tot": "env"
-			},
-			{
-				"t": "set",
-				"p": "payload",
-				"pt": "msg",
-				"to": "$flowContext(\"Lp_Strom2\")",
-				"tot": "jsonata"
-			}
-		],
-		"action": "",
-		"property": "",
-		"from": "",
-		"to": "",
-		"reg": false,
-		"x": 980,
-		"y": 520,
 		"wires": [
 			[]
 		]
@@ -4237,6 +4104,26 @@
 			[
 				"d28d6c2d.ccd198"
 			]
+		]
+	},
+	{
+		"id": "71b196bb372367ab",
+		"type": "function",
+		"z": "5c4ac285.afe6e4",
+		"name": "Phasen für EVU rotieren",
+		"func": "const componentId = env.get(\"Component-ID\");\nconst phasesInUse = flow.get(\"Lp_Phasen\");\nconst phase1 = parseInt(env.get(\"Phase1\"));\n\nvar phaseCurrents = [0,0,0];\n\nswitch (phase1) {\n    case 1:\n        phaseCurrents[0] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[1] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[2] = msg.payload;\n        break;\n    case 2:\n        phaseCurrents[1] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[2] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[0] = msg.payload;\n        break;\n    case 3:\n        phaseCurrents[2] = msg.payload;\n        if( phasesInUse > 1 )\n            phaseCurrents[0] = msg.payload;\n        if( phasesInUse > 2 )\n            phaseCurrents[1] = msg.payload;\n        break;\n}\n\nvar evuPhaseCurrentMsgs = [\n    {\n        \"topic\": \"/chargepoint/\" + componentId + \"/get/current_p1\",\n        \"payload\": phaseCurrents[0]\n    },\n    {\n        \"topic\": \"/chargepoint/\" + componentId + \"/get/current_p2\",\n        \"payload\": phaseCurrents[1]\n    },\n    {\n        \"topic\": \"/chargepoint/\" + componentId + \"/get/current_p3\",\n        \"payload\": phaseCurrents[2]\n    }\n];\n\nreturn [evuPhaseCurrentMsgs];\n",
+		"outputs": 1,
+		"noerr": 0,
+		"initialize": "",
+		"finalize": "",
+		"libs": [],
+		"x": 990,
+		"y": 580,
+		"wires": [
+			[]
+		],
+		"outputLabels": [
+			"Strom EVU (phasenrotiert)"
 		]
 	},
 	{
