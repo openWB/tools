@@ -8,6 +8,7 @@ Der Flow simuliert das EVU-Modul, ein PV- sowie Speicher-Modul und drei Ladepunk
 - node-red-contrib-pid
 - node-red-dashboard
 - node-red-node-smooth
+- node-red-node-random
 
 ## erforderliche Anpassungen nach dem Import
 - der MQTT Konfigurations-Node muss an die IP oder den Hostnamen der eigenen openWB angepasst werden
