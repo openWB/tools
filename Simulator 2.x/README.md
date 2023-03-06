@@ -4,11 +4,12 @@ Die Umgebung besteht aus einem Zähler (muss als "EVU" in der Hierarchie eingeri
 einem PV-Modul, einem Batteriespeicher sowie drei Ladepunkten.
 
 ## Voraussetzungen
-- Node-Red (getestet mit 2.2.2)
+- Node-Red (getestet bis 3.0.2)
 - node-red-contrib-interval-length
 - node-red-contrib-pid
 - node-red-dashboard
 - node-red-node-smooth
+- node-red-node-random
 
 ## Hintergrundwissen
 Die PV-Anlage ist aktuell an alle drei Phasen "angeschlossen" und verteilt die Leistung gleichmäßig.
