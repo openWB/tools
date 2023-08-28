@@ -1,5 +1,13 @@
 [
 	{
+		"id": "92165c72.a5f948",
+		"type": "tab",
+		"label": "Simulator 2.0",
+		"disabled": false,
+		"info": "# Simulator für openWB 2.x\nMit diesem Flow kann eine komplette virtuelle Umgebung für openWB bereitgestellt werden.\nDie Umgebung besteht aus einem Zähler (muss als \"EVU\" in der Hierarchie eingerichtet sein),\neinem PV-Modul, einem Batteriespeicher sowie drei Ladepunkten.\n\n## Hintergrundwissen\nDie PV-Anlage ist aktuell an alle drei Phasen \"angeschlossen\" und verteilt die Leistung gleichmäßig.\n_(ToDo: Anschluss variabel auf einzelne Phasen konfigurierbar)_\n\nDer Batteriespeicher verteilt seine Leistung ebenfalls gleichmäßig auf alle drei Phasen.\n_(ToDo: Anschluss variabel auf einzelne Phasen konfigurierbar)_\n\nDie Leistung des Speichers wird durch einen PID-Regler gesteuert. Die Parameter sind noch nicht optimal\neingestellt. Es kann vorkommen, dass die Regelung anfängt zu schwingen.\n_(ToDo: PID-Regler optimieren)_\n\n## Einrichtung\n**Da alle Komponenten in openWB 2.x dynamisch vergeben werden, müssen nach dem Import des Flows\ndie Komponenten-IDs an die jeweiligen Gegebenheiten der eigenen Installation angepasst werden!**\n\nDie Komponenten-IDs können in den Eigenschaften der Sub-Flows \"EVU\", \"PV1\", \"Bat\", \"LP1\", \"LP2\" und \"LP3\"\nfestgelegt werden.\n\nIn den Sub-Flow Eigenschaften der Ladepunkte kann ebenfalls festgelegt werden, an welcher Phase L1 des\nEVU angeschlossen ist. Dadurch können auch komplexe Setups mit (gut oder ungünstig) rotierten Phasen\nabgebildet werden.\n\n---\n\n# Steuerungsmöglichkeiten im Dashboard\n\n## EVU Zähler\nDer virtuelle Hausverbrauch kann im Dashboard je Phase festgelegt werden. Dadurch können gezielt Schieflasten\nfür das Lastmanagement erzeugt werden.\n\nDie Netzfrequenz des Zählers kann variiert werden, um den Netzschutz seitens des Energieversorgers zu testen.\n\n## PV\nDie aktuelle Leistung des Wechselrichters kann zwischen 0W und 10kW variiert werden.\n\n## Batteriespeicher\nDer aktuelle Ladestand (SoC) kann gezielt eingestellt werden.\n\nDie maximale Leistung des Speichers kann zwischen 0W und 5kW eingestellt werden.\n\nDie virtuelle Kapazität des Batteriespeichers kann auf bis zu 15kWh angepsst werden.\n\n## Ladepunkte\nEs kann ein Fahrzeug \"angesteckt\" werden.\n\nEs kann angegeben werden, wieviele Phasen das angeschlossene Fahrzeug maximal nutzen kann.\n",
+		"env": []
+	},
+	{
 		"id": "c5821ca1.ee2da",
 		"type": "subflow",
 		"name": "Sub PV 2.0",
@@ -72,6 +80,653 @@
 				}
 			]
 		}
+	},
+	{
+		"id": "2dd5cf5c.4ae26",
+		"type": "subflow",
+		"name": "Sub BAT 2.0",
+		"info": "",
+		"category": "",
+		"in": [
+			{
+				"x": 40,
+				"y": 200,
+				"wires": [
+					{
+						"id": "e46c92f3.d21a9"
+					}
+				]
+			}
+		],
+		"out": [
+			{
+				"x": 540,
+				"y": 40,
+				"wires": [
+					{
+						"id": "28e0a4ab.758cfc",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1360,
+				"y": 560,
+				"wires": [
+					{
+						"id": "2e89309f.ba832",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1120,
+				"y": 900,
+				"wires": [
+					{
+						"id": "dec3f627.a2d958",
+						"port": 0
+					},
+					{
+						"id": "3ef4b7a7.942b78",
+						"port": 0
+					},
+					{
+						"id": "9079ffaf.4a096",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1180,
+				"y": 40,
+				"wires": [
+					{
+						"id": "a6823773fb1192f8",
+						"port": 0
+					}
+				]
+			}
+		],
+		"env": [
+			{
+				"name": "Component-ID",
+				"type": "str",
+				"value": "2"
+			}
+		],
+		"meta": {},
+		"color": "#DDAA99",
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			"Chart",
+			"Debug"
+		],
+		"status": {
+			"x": 880,
+			"y": 40,
+			"wires": [
+				{
+					"id": "f5afed4e.b6449",
+					"port": 0
+				}
+			]
+		}
+	},
+	{
+		"id": "da060938.c8ff48",
+		"type": "subflow",
+		"name": "Sub EVU 2.0",
+		"info": "",
+		"category": "",
+		"in": [
+			{
+				"x": 40,
+				"y": 380,
+				"wires": [
+					{
+						"id": "60345bb6.1855d4"
+					}
+				]
+			}
+		],
+		"out": [
+			{
+				"x": 560,
+				"y": 40,
+				"wires": [
+					{
+						"id": "97a98e87.248e6",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1400,
+				"y": 1040,
+				"wires": [
+					{
+						"id": "f7fd464c.dac218",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1140,
+				"y": 40,
+				"wires": [
+					{
+						"id": "c1f27145620a046e",
+						"port": 0
+					}
+				]
+			}
+		],
+		"env": [
+			{
+				"name": "Component-ID",
+				"type": "num",
+				"value": "0"
+			}
+		],
+		"meta": {},
+		"color": "#DDAA99",
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			"Debug",
+			"Dashboard"
+		],
+		"status": {
+			"x": 850,
+			"y": 40,
+			"wires": [
+				{
+					"id": "8d39538d.a5c0b",
+					"port": 0
+				}
+			]
+		}
+	},
+	{
+		"id": "5c4ac285.afe6e4",
+		"type": "subflow",
+		"name": "Sub Ladepunkt 2.0",
+		"info": "",
+		"category": "",
+		"in": [
+			{
+				"x": 60,
+				"y": 180,
+				"wires": [
+					{
+						"id": "5564373bd8d8091a"
+					}
+				]
+			}
+		],
+		"out": [
+			{
+				"x": 620,
+				"y": 40,
+				"wires": [
+					{
+						"id": "d477d279.2cc62",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1200,
+				"y": 700,
+				"wires": [
+					{
+						"id": "2254d233.5854e6",
+						"port": 0
+					},
+					{
+						"id": "58ec8187c6755198",
+						"port": 0
+					},
+					{
+						"id": "71b196bb372367ab",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1100,
+				"y": 200,
+				"wires": [
+					{
+						"id": "5b4b7510.acf434",
+						"port": 0
+					},
+					{
+						"id": "124dbffa.10bb",
+						"port": 0
+					},
+					{
+						"id": "5c185bf1.72503c",
+						"port": 0
+					},
+					{
+						"id": "78b855e9.ef0b24",
+						"port": 0
+					},
+					{
+						"id": "33434644.b16a22",
+						"port": 0
+					}
+				]
+			},
+			{
+				"x": 1210,
+				"y": 40,
+				"wires": [
+					{
+						"id": "bddf955cca42c275",
+						"port": 0
+					}
+				]
+			}
+		],
+		"env": [
+			{
+				"name": "Component-ID",
+				"type": "num",
+				"value": "",
+				"ui": {
+					"icon": "font-awesome/fa-hashtag",
+					"type": "spinner",
+					"opts": {
+						"min": 1
+					}
+				}
+			},
+			{
+				"name": "Phase1",
+				"type": "num",
+				"value": "1",
+				"ui": {
+					"icon": "font-awesome/fa-list-ol",
+					"type": "spinner",
+					"opts": {
+						"min": 1,
+						"max": 3
+					}
+				}
+			},
+			{
+				"name": "Chargepoint-ID",
+				"type": "num",
+				"value": "",
+				"ui": {
+					"type": "spinner",
+					"opts": {
+						"min": 1,
+						"max": 3
+					}
+				}
+			}
+		],
+		"meta": {},
+		"color": "#DDAA99",
+		"inputLabels": [
+			"Sollwerte"
+		],
+		"outputLabels": [
+			"openWB",
+			"schnelle Regelwerte",
+			"Input Passthrough",
+			"Debug"
+		],
+		"status": {
+			"x": 900,
+			"y": 40,
+			"wires": [
+				{
+					"id": "c4b80c5a.65fa88",
+					"port": 0
+				}
+			]
+		}
+	},
+	{
+		"id": "10c935e7.d81c6a",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Ladepunkt 1",
+		"style": {
+			"label": true,
+			"stroke": "#0070c0",
+			"fill": "#0070c0",
+			"fill-opacity": "0.25"
+		},
+		"nodes": [
+			"a9947543.f34bd",
+			"9dad0a08.b2c0f",
+			"66502428.6bc2ec",
+			"4efd69fa.600b1",
+			"bcde68d8.fbde58",
+			"b4c0b8e7.95301",
+			"c2212cf2.e2bfe",
+			"bca07e3a.16ff08",
+			"c7894755.6c934",
+			"1c08d24.841d3ae",
+			"aa2ce19d.eaf1e8",
+			"5aa1d8c69080891b",
+			"e6650f13b3cc695a",
+			"ed32a789.f4f798",
+			"8c206019dae8c4f0",
+			"44f4fcadd171fe6d",
+			"1e68cfab.5aab5",
+			"3c77c4ed766b07a5",
+			"ac0a42a5e9a6a1d8",
+			"dab0d3d1144c2cc4"
+		],
+		"x": 14,
+		"y": 1144,
+		"w": 1152,
+		"h": 417
+	},
+	{
+		"id": "9924f98f.a9ee4",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "PV 1",
+		"style": {
+			"stroke": "#92d04f",
+			"fill": "#92d04f",
+			"fill-opacity": "0.25",
+			"label": true
+		},
+		"nodes": [
+			"2ab22961.d73e06",
+			"8c9d0662.e0c83",
+			"83082d16.5c0c",
+			"c6745675.5b9ec",
+			"c98a2da7.d75a38",
+			"54fdb013.3028f8",
+			"f5a5cec3.4fd8a8",
+			"9605f30870c8aa1a",
+			"c44e5ea9.d6b06"
+		],
+		"x": 14,
+		"y": 511.5,
+		"w": 1072,
+		"h": 209.5
+	},
+	{
+		"id": "adca6b9d.7ef678",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Ladepunkt 3",
+		"style": {
+			"label": true,
+			"stroke": "#0070c0",
+			"fill": "#0070c0",
+			"fill-opacity": "0.25"
+		},
+		"nodes": [
+			"f63b330f.c096e",
+			"db2cd204.7325b8",
+			"bb9a80f3.6ed8d",
+			"d1f901d9.c7e1e8",
+			"1d7224a3.976403",
+			"7e5d3fc0.81f4f8",
+			"c08ace1e.18cd08",
+			"e25c1f48.8f5e18",
+			"6add9cf1.e85094",
+			"b2b4e4a9.e78cd8",
+			"1ef6368267acccec",
+			"ab6610e58dd3eb1c",
+			"b9d330a1.5a",
+			"711106cc.96ed18",
+			"0a303aeb4727c810",
+			"268be22f.974e1e",
+			"61501fd2e18b0ed9",
+			"2397a2d2e13d5c0a",
+			"4ea0f783b9ca324e",
+			"fd0bd4a773502e77"
+		],
+		"x": 14,
+		"y": 2064,
+		"w": 1152,
+		"h": 417
+	},
+	{
+		"id": "ba86e05e.3eb518",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "EVU",
+		"style": {
+			"stroke": "#ff0000",
+			"fill": "#ff0000",
+			"fill-opacity": "0.25",
+			"label": true
+		},
+		"nodes": [
+			"c5f91c31.79af98",
+			"2b5259d1.0e44ae",
+			"4c1c0dd1.be816c",
+			"fa5f56e0.4465e",
+			"90812723.7b3678",
+			"3e1bb28f.704a8e",
+			"f754ebac.d7d598",
+			"e854990fb4f9fab2",
+			"b46365f7d8aa13b6",
+			"524bd7697f7a306c",
+			"cde7317bc368b6b3",
+			"3036d462.5d789c",
+			"50edc6fb6d78740a",
+			"9145b76c44a9c929",
+			"3d8e2d3b4ee89e76",
+			"dc8f75f240dcf3b8",
+			"80ec81072842f306",
+			"7e693d583a244143"
+		],
+		"x": 14,
+		"y": 171.5,
+		"w": 1092,
+		"h": 289.5
+	},
+	{
+		"id": "c8376289.15bc1",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Speicher",
+		"style": {
+			"stroke": "#ffC000",
+			"fill": "#ffC000",
+			"fill-opacity": "0.25",
+			"label": true
+		},
+		"nodes": [
+			"9641b34b.2e9cd",
+			"145b387d.21aa88",
+			"dc7c97e6.6d6ad8",
+			"8243b679.c8f0f8",
+			"9ac3e1c9.e83e1",
+			"5deb68e4.79c458",
+			"96ea46e5.2b8618",
+			"ab178052.48bc98",
+			"a5a86b10.4dee38",
+			"d34c32d3.8f3448",
+			"6faaaef.e02a3d",
+			"bc6d74f3.8135d8",
+			"3df4fb4b.a9b13c",
+			"daf73f9a.fb50e",
+			"cf0bcd92.6fbe48",
+			"7a4711d4a689d6d4",
+			"234fd994.ef3106"
+		],
+		"x": 14,
+		"y": 764,
+		"w": 1092,
+		"h": 337
+	},
+	{
+		"id": "4ffeb8f2.88e97",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Ladepunkt 2",
+		"style": {
+			"label": true,
+			"stroke": "#0070c0",
+			"fill": "#0070c0",
+			"fill-opacity": "0.25"
+		},
+		"nodes": [
+			"9e477905.67cf68",
+			"30584a7c.88a996",
+			"ea8feee.389911",
+			"1b06aa0d.461b36",
+			"ce8b41fa.71b588",
+			"bd2575a0.0cbce",
+			"f1d863d5.a29c18",
+			"b5d70a0.77f3e78",
+			"73ffea7f.199e1c",
+			"f3d097a6.b80d18",
+			"89dc41d2.e8c018",
+			"266b0231.f4db36",
+			"4a41415e440b1304",
+			"0b69966b365c4536",
+			"43a92dd0.39da44",
+			"25f6934e60f9b4d6",
+			"5316d2315b34de5a",
+			"cbdca721f944522a",
+			"e648cfa22c2cd2ec",
+			"347e9bc401e0eddd"
+		],
+		"x": 14,
+		"y": 1604,
+		"w": 1152,
+		"h": 417
+	},
+	{
+		"id": "3e039a5092696f5f",
+		"type": "group",
+		"z": "92165c72.a5f948",
+		"name": "Allgemeine Nodes",
+		"style": {
+			"label": true
+		},
+		"nodes": [
+			"51d8d30d.b63194",
+			"fd94d24f.8eb11",
+			"f8fb4ebc3ad90445",
+			"529ef24e.47a72c",
+			"426f1381e1bed357"
+		],
+		"x": 14,
+		"y": 19,
+		"w": 1072,
+		"h": 142
+	},
+	{
+		"id": "5c48b79a.d6b918",
+		"type": "mqtt-broker",
+		"name": "openWB-20",
+		"broker": "localhost",
+		"port": "1883",
+		"clientid": "",
+		"autoConnect": true,
+		"usetls": false,
+		"compatmode": false,
+		"protocolVersion": "4",
+		"keepalive": "60",
+		"cleansession": true,
+		"birthTopic": "",
+		"birthQos": "0",
+		"birthPayload": "",
+		"birthMsg": {},
+		"closeTopic": "",
+		"closeQos": "0",
+		"closePayload": "",
+		"closeMsg": {},
+		"willTopic": "",
+		"willQos": "0",
+		"willPayload": "",
+		"willMsg": {},
+		"userProps": "",
+		"sessionExpiry": ""
+	},
+	{
+		"id": "703fdeb2.7ab84",
+		"type": "ui_group",
+		"name": "Lp 1",
+		"tab": "940b8055.1139f",
+		"order": 4,
+		"disp": true,
+		"width": "6",
+		"collapse": true,
+		"className": ""
+	},
+	{
+		"id": "77ebf297.439d3c",
+		"type": "ui_group",
+		"name": "Lp 3",
+		"tab": "940b8055.1139f",
+		"order": 6,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "9b18f281.ca979",
+		"type": "ui_group",
+		"name": "EVU Zähler",
+		"tab": "940b8055.1139f",
+		"order": 1,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "bda74558.0d74e8",
+		"type": "ui_group",
+		"name": "Speicher 1",
+		"tab": "940b8055.1139f",
+		"order": 3,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "1690fa25.a7c9a6",
+		"type": "ui_group",
+		"name": "PV 1",
+		"tab": "940b8055.1139f",
+		"order": 2,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "3fdb380f.aba898",
+		"type": "ui_group",
+		"name": "Lp 2",
+		"tab": "940b8055.1139f",
+		"order": 5,
+		"disp": true,
+		"width": "6",
+		"collapse": false,
+		"className": ""
+	},
+	{
+		"id": "940b8055.1139f",
+		"type": "ui_tab",
+		"name": "Simulator 2.0",
+		"icon": "fa-car ",
+		"order": 1,
+		"disabled": false,
+		"hidden": false
 	},
 	{
 		"id": "180041c4.08fc2e",
@@ -507,99 +1162,6 @@
 		"wires": [
 			[]
 		]
-	},
-	{
-		"id": "2dd5cf5c.4ae26",
-		"type": "subflow",
-		"name": "Sub BAT 2.0",
-		"info": "",
-		"category": "",
-		"in": [
-			{
-				"x": 40,
-				"y": 200,
-				"wires": [
-					{
-						"id": "e46c92f3.d21a9"
-					}
-				]
-			}
-		],
-		"out": [
-			{
-				"x": 540,
-				"y": 40,
-				"wires": [
-					{
-						"id": "28e0a4ab.758cfc",
-						"port": 0
-					}
-				]
-			},
-			{
-				"x": 1360,
-				"y": 560,
-				"wires": [
-					{
-						"id": "2e89309f.ba832",
-						"port": 0
-					}
-				]
-			},
-			{
-				"x": 1120,
-				"y": 900,
-				"wires": [
-					{
-						"id": "dec3f627.a2d958",
-						"port": 0
-					},
-					{
-						"id": "3ef4b7a7.942b78",
-						"port": 0
-					},
-					{
-						"id": "9079ffaf.4a096",
-						"port": 0
-					}
-				]
-			},
-			{
-				"x": 1180,
-				"y": 40,
-				"wires": [
-					{
-						"id": "a6823773fb1192f8",
-						"port": 0
-					}
-				]
-			}
-		],
-		"env": [
-			{
-				"name": "Component-ID",
-				"type": "str",
-				"value": "2"
-			}
-		],
-		"meta": {},
-		"color": "#DDAA99",
-		"outputLabels": [
-			"openWB",
-			"schnelle Regelwerte",
-			"Chart",
-			"Debug"
-		],
-		"status": {
-			"x": 880,
-			"y": 40,
-			"wires": [
-				{
-					"id": "f5afed4e.b6449",
-					"port": 0
-				}
-			]
-		}
 	},
 	{
 		"id": "fa698281.c98db",
@@ -1405,81 +1967,6 @@
 		]
 	},
 	{
-		"id": "da060938.c8ff48",
-		"type": "subflow",
-		"name": "Sub EVU 2.0",
-		"info": "",
-		"category": "",
-		"in": [
-			{
-				"x": 40,
-				"y": 380,
-				"wires": [
-					{
-						"id": "60345bb6.1855d4"
-					}
-				]
-			}
-		],
-		"out": [
-			{
-				"x": 560,
-				"y": 40,
-				"wires": [
-					{
-						"id": "97a98e87.248e6",
-						"port": 0
-					}
-				]
-			},
-			{
-				"x": 1400,
-				"y": 1040,
-				"wires": [
-					{
-						"id": "f7fd464c.dac218",
-						"port": 0
-					}
-				]
-			},
-			{
-				"x": 1140,
-				"y": 40,
-				"wires": [
-					{
-						"id": "c1f27145620a046e",
-						"port": 0
-					}
-				]
-			}
-		],
-		"env": [
-			{
-				"name": "Component-ID",
-				"type": "num",
-				"value": "0"
-			}
-		],
-		"meta": {},
-		"color": "#DDAA99",
-		"outputLabels": [
-			"openWB",
-			"schnelle Regelwerte",
-			"Debug",
-			"Dashboard"
-		],
-		"status": {
-			"x": 850,
-			"y": 40,
-			"wires": [
-				{
-					"id": "8d39538d.a5c0b",
-					"port": 0
-				}
-			]
-		}
-	},
-	{
 		"id": "a14ffb7.da27208",
 		"type": "inject",
 		"z": "da060938.c8ff48",
@@ -1737,7 +2224,7 @@
 		"type": "function",
 		"z": "da060938.c8ff48",
 		"name": "Senden der Flow-Daten",
-		"func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"evu\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst actualCurrent = flow.get(\"evu_current\");\n\nvar statusColor = \"green\";\nvar statusShape = \"dot\";\nif(actualPower > 0)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW, \"+flow.get(\"evu_current\")\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/imported\",\n            payload: parseFloat(flow.get(\"WhImported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/exported\",\n            payload: parseFloat(flow.get(\"WhExported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/power\",\n            payload: parseInt(flow.get(\"evu\").toFixed(0))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/currents\",\n            payload: actualCurrent\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/voltages\",\n            payload: [230,230,230]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/powers\",\n            payload: [230*actualCurrent[0], 230*actualCurrent[1], 230*actualCurrent[2]]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/power_factors\",\n            payload: [1,1,1]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/frequency\",\n            payload: parseFloat(flow.get(\"frequency\"))\n        }\n   ]\n]",
+		"func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"evu\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst actualCurrent = flow.get(\"evu_current\");\nconst voltageL1 = flow.get(\"spannungL1\");\nconst voltageL2 = flow.get(\"spannungL2\");\nconst voltageL3 = flow.get(\"spannungL3\");\nconst powerFactorL1 = flow.get(\"leistungsfaktorL1\");\nconst powerFactorL2 = flow.get(\"leistungsfaktorL2\");\nconst powerFactorL3 = flow.get(\"leistungsfaktorL3\");\n\nvar statusColor = \"green\";\nvar statusShape = \"dot\";\nif(actualPower > 0)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW, \"+flow.get(\"evu_current\")\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/imported\",\n            payload: parseFloat(flow.get(\"WhImported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/exported\",\n            payload: parseFloat(flow.get(\"WhExported\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/power\",\n            payload: parseInt(flow.get(\"evu\").toFixed(0))\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/currents\",\n            payload: actualCurrent\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/voltages\",\n            payload: [voltageL1, voltageL2, voltageL3]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/powers\",\n            payload: [voltageL1 * actualCurrent[0] * powerFactorL1, voltageL2 * actualCurrent[1] * powerFactorL2, voltageL3 * actualCurrent[2] * powerFactorL3]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/power_factors\",\n            payload: [powerFactorL1, powerFactorL2, powerFactorL3]\n        },\n        {\n            topic: \"openWB/set/counter/\" + ComponentId + \"/get/frequency\",\n            payload: parseFloat(flow.get(\"frequency\"))\n        }\n   ]\n]",
 		"outputs": 1,
 		"noerr": 0,
 		"initialize": "",
@@ -2279,6 +2766,48 @@
 				"p": "HausverbrauchNorm",
 				"pt": "flow",
 				"to": "1000",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "spannungL1",
+				"pt": "flow",
+				"to": "230",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "spannungL2",
+				"pt": "flow",
+				"to": "230",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "spannungL3",
+				"pt": "flow",
+				"to": "230",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "leistungsfaktorL1",
+				"pt": "flow",
+				"to": "1.0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "leistungsfaktorL2",
+				"pt": "flow",
+				"to": "1.0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "leistungsfaktorL3",
+				"pt": "flow",
+				"to": "1.0",
 				"tot": "num"
 			}
 		],
@@ -2885,150 +3414,6 @@
 		]
 	},
 	{
-		"id": "5c4ac285.afe6e4",
-		"type": "subflow",
-		"name": "Sub Ladepunkt 2.0",
-		"info": "",
-		"category": "",
-		"in": [
-			{
-				"x": 60,
-				"y": 180,
-				"wires": [
-					{
-						"id": "5564373bd8d8091a"
-					}
-				]
-			}
-		],
-		"out": [
-			{
-				"x": 620,
-				"y": 40,
-				"wires": [
-					{
-						"id": "d477d279.2cc62",
-						"port": 0
-					}
-				]
-			},
-			{
-				"x": 1200,
-				"y": 700,
-				"wires": [
-					{
-						"id": "2254d233.5854e6",
-						"port": 0
-					},
-					{
-						"id": "58ec8187c6755198",
-						"port": 0
-					},
-					{
-						"id": "71b196bb372367ab",
-						"port": 0
-					}
-				]
-			},
-			{
-				"x": 1100,
-				"y": 200,
-				"wires": [
-					{
-						"id": "5b4b7510.acf434",
-						"port": 0
-					},
-					{
-						"id": "124dbffa.10bb",
-						"port": 0
-					},
-					{
-						"id": "5c185bf1.72503c",
-						"port": 0
-					},
-					{
-						"id": "78b855e9.ef0b24",
-						"port": 0
-					},
-					{
-						"id": "33434644.b16a22",
-						"port": 0
-					}
-				]
-			},
-			{
-				"x": 1210,
-				"y": 40,
-				"wires": [
-					{
-						"id": "bddf955cca42c275",
-						"port": 0
-					}
-				]
-			}
-		],
-		"env": [
-			{
-				"name": "Component-ID",
-				"type": "num",
-				"value": "",
-				"ui": {
-					"icon": "font-awesome/fa-hashtag",
-					"type": "spinner",
-					"opts": {
-						"min": 1
-					}
-				}
-			},
-			{
-				"name": "Phase1",
-				"type": "num",
-				"value": "1",
-				"ui": {
-					"icon": "font-awesome/fa-list-ol",
-					"type": "spinner",
-					"opts": {
-						"min": 1,
-						"max": 3
-					}
-				}
-			},
-			{
-				"name": "Chargepoint-ID",
-				"type": "num",
-				"value": "",
-				"ui": {
-					"type": "spinner",
-					"opts": {
-						"min": 1,
-						"max": 3
-					}
-				}
-			}
-		],
-		"meta": {},
-		"color": "#DDAA99",
-		"inputLabels": [
-			"Sollwerte"
-		],
-		"outputLabels": [
-			"openWB",
-			"schnelle Regelwerte",
-			"Input Passthrough",
-			"Debug"
-		],
-		"status": {
-			"x": 900,
-			"y": 40,
-			"wires": [
-				{
-					"id": "c4b80c5a.65fa88",
-					"port": 0
-				}
-			]
-		}
-	},
-	{
 		"id": "5b4b7510.acf434",
 		"type": "change",
 		"z": "5c4ac285.afe6e4",
@@ -3202,7 +3587,7 @@
 		"type": "function",
 		"z": "5c4ac285.afe6e4",
 		"name": "Senden der Flow-Daten",
-		"func": "const LPNumber = env.get(\"Component-ID\");\n\nvar chargestat = 0;\nif( flow.get(\"Lp_Strom1\") > 0 || flow.get(\"Lp_Strom2\") > 0 || flow.get(\"Lp_Strom3\") > 0 ){\n    chargestat = 1;\n}\n\nvar statusColor = \"red\";\nvar statusShape = \"ring\";\nif (flow.get(\"Lp_Stecker\") == 1){\n    statusColor = \"green\"\n    if (chargestat == 1){\n        statusShape = \"dot\";\n    }\n}\n\nconst actualPower = parseInt(flow.get(\"Lp_Ladeleistung\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst phasesInUse = flow.get(\"Lp_Phasen\");\nconst phasesToUse = flow.get(\"Lp_Phasenumschaltung\");\nconst phasesEVmax = flow.get(\"Lp_EV_Phasen\");\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW \"+phasesInUse+\"P(\"+phasesEVmax+\"/\"+phasesToUse+\")\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/currents\",\n            payload: [flow.get(\"Lp_Strom1\"), flow.get(\"Lp_Strom2\"), flow.get(\"Lp_Strom3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/voltages\",\n            payload: [flow.get(\"Lp_Spannung1\"), flow.get(\"Lp_Spannung2\"), flow.get(\"Lp_Spannung3\")]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/imported\",\n            payload: parseFloat(flow.get(\"Lp_Zähler_laden\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/exported\",\n            payload: parseFloat(flow.get(\"Lp_Zähler_entladen\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/plug_state\",\n            payload: flow.get(\"Lp_Stecker\")\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/charge_state\",\n            payload: chargestat\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/phases_in_use\",\n            payload: phasesInUse\n        }\n    ]\n]\n",
+		"func": "const LPNumber = env.get(\"Component-ID\");\n\nvar chargestat = 0;\nif( flow.get(\"Lp_Strom1\") > 0 || flow.get(\"Lp_Strom2\") > 0 || flow.get(\"Lp_Strom3\") > 0 ){\n    chargestat = 1;\n}\n\nvar statusColor = \"red\";\nvar statusShape = \"ring\";\nif (flow.get(\"Lp_Stecker\") == 1){\n    statusColor = \"green\"\n    if (chargestat == 1){\n        statusShape = \"dot\";\n    }\n}\n\nconst actualPower = parseInt(flow.get(\"Lp_Ladeleistung\").toFixed(0));\nconst actualPowerkW = actualPower / 1000;\nconst phasesInUse = flow.get(\"Lp_Phasen\");\nconst phasesToUse = flow.get(\"Lp_Phasenumschaltung\");\nconst phasesEVmax = flow.get(\"Lp_EV_Phasen\");\nconst currentL1 = flow.get(\"Lp_Strom1\");\nconst currentL2 = flow.get(\"Lp_Strom2\");\nconst currentL3 = flow.get(\"Lp_Strom3\");\nconst volatageL1 = flow.get(\"Lp_Spannung1\");\nconst volatageL2 = flow.get(\"Lp_Spannung2\");\nconst volatageL3 = flow.get(\"Lp_Spannung3\");\nconst powerFactorL1 = flow.get(\"Lp_Leistungsfaktor1\");\nconst powerFactorL2 = flow.get(\"Lp_Leistungsfaktor2\");\nconst powerFactorL3 = flow.get(\"Lp_Leistungsfaktor3\");\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n        text:actualPowerkW.toFixed(1)+\"kW \"+phasesInUse+\"P(\"+phasesEVmax+\"/\"+phasesToUse+\")\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/currents\",\n            payload: [currentL1, currentL2, currentL3]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/voltages\",\n            payload: [volatageL1, volatageL2, volatageL3]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/powers\",\n            payload: [volatageL1 * currentL1 * powerFactorL1, volatageL2 * currentL2 * powerFactorL2, volatageL3 * currentL3 * powerFactorL3]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/power_factors\",\n            payload: [powerFactorL1, powerFactorL2, powerFactorL3]\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/frequency\",\n            payload: flow.get(\"Lp_Netzfrequenz\")\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/imported\",\n            payload: parseFloat(flow.get(\"Lp_Zähler_laden\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/exported\",\n            payload: parseFloat(flow.get(\"Lp_Zähler_entladen\").toFixed(3))\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/plug_state\",\n            payload: flow.get(\"Lp_Stecker\")\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/charge_state\",\n            payload: chargestat\n        },\n        {\n            topic: \"openWB/set/chargepoint/\" + LPNumber + \"/get/phases_in_use\",\n            payload: phasesInUse\n        }\n    ]\n]\n",
 		"outputs": 1,
 		"noerr": 0,
 		"initialize": "",
@@ -3362,7 +3747,7 @@
 				"t": "set",
 				"p": "Lp_Ladeleistung",
 				"pt": "flow",
-				"to": "$flowContext(\"Lp_Spannung1\")*$flowContext(\"Lp_Strom1\")+$flowContext(\"Lp_Spannung2\")*$flowContext(\"Lp_Strom2\")+$flowContext(\"Lp_Spannung3\")*$flowContext(\"Lp_Strom3\")",
+				"to": "$flowContext(\"Lp_Spannung1\")*$flowContext(\"Lp_Strom1\")*$flowContext(\"Lp_Leistungsfaktor1\")+$flowContext(\"Lp_Spannung2\")*$flowContext(\"Lp_Strom2\")*$flowContext(\"Lp_Leistungsfaktor2\")+$flowContext(\"Lp_Spannung3\")*$flowContext(\"Lp_Strom3\")*$flowContext(\"Lp_Leistungsfaktor3\")",
 				"tot": "jsonata"
 			},
 			{
@@ -3828,6 +4213,27 @@
 				"pt": "flow",
 				"to": "0",
 				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Leistungsfaktor1",
+				"pt": "flow",
+				"to": "1.0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Leistungsfaktor2",
+				"pt": "flow",
+				"to": "1.0",
+				"tot": "num"
+			},
+			{
+				"t": "set",
+				"p": "Lp_Leistungsfaktor3",
+				"pt": "flow",
+				"to": "1.0",
+				"tot": "num"
 			}
 		],
 		"action": "",
@@ -4125,240 +4531,6 @@
 		"outputLabels": [
 			"Strom EVU (phasenrotiert)"
 		]
-	},
-	{
-		"id": "92165c72.a5f948",
-		"type": "tab",
-		"label": "Simulator 2.0",
-		"disabled": false,
-		"info": "# Simulator für openWB 2.x\nMit diesem Flow kann eine komplette virtuelle Umgebung für openWB bereitgestellt werden.\nDie Umgebung besteht aus einem Zähler (muss als \"EVU\" in der Hierarchie eingerichtet sein),\neinem PV-Modul, einem Batteriespeicher sowie drei Ladepunkten.\n\n## Hintergrundwissen\nDie PV-Anlage ist aktuell an alle drei Phasen \"angeschlossen\" und verteilt die Leistung gleichmäßig.\n_(ToDo: Anschluss variabel auf einzelne Phasen konfigurierbar)_\n\nDer Batteriespeicher verteilt seine Leistung ebenfalls gleichmäßig auf alle drei Phasen.\n_(ToDo: Anschluss variabel auf einzelne Phasen konfigurierbar)_\n\nDie Leistung des Speichers wird durch einen PID-Regler gesteuert. Die Parameter sind noch nicht optimal\neingestellt. Es kann vorkommen, dass die Regelung anfängt zu schwingen.\n_(ToDo: PID-Regler optimieren)_\n\n## Einrichtung\n**Da alle Komponenten in openWB 2.x dynamisch vergeben werden, müssen nach dem Import des Flows\ndie Komponenten-IDs an die jeweiligen Gegebenheiten der eigenen Installation angepasst werden!**\n\nDie Komponenten-IDs können in den Eigenschaften der Sub-Flows \"EVU\", \"PV1\", \"Bat\", \"LP1\", \"LP2\" und \"LP3\"\nfestgelegt werden.\n\nIn den Sub-Flow Eigenschaften der Ladepunkte kann ebenfalls festgelegt werden, an welcher Phase L1 des\nEVU angeschlossen ist. Dadurch können auch komplexe Setups mit (gut oder ungünstig) rotierten Phasen\nabgebildet werden.\n\n---\n\n# Steuerungsmöglichkeiten im Dashboard\n\n## EVU Zähler\nDer virtuelle Hausverbrauch kann im Dashboard je Phase festgelegt werden. Dadurch können gezielt Schieflasten\nfür das Lastmanagement erzeugt werden.\n\nDie Netzfrequenz des Zählers kann variiert werden, um den Netzschutz seitens des Energieversorgers zu testen.\n\n## PV\nDie aktuelle Leistung des Wechselrichters kann zwischen 0W und 10kW variiert werden.\n\n## Batteriespeicher\nDer aktuelle Ladestand (SoC) kann gezielt eingestellt werden.\n\nDie maximale Leistung des Speichers kann zwischen 0W und 5kW eingestellt werden.\n\nDie virtuelle Kapazität des Batteriespeichers kann auf bis zu 15kWh angepsst werden.\n\n## Ladepunkte\nEs kann ein Fahrzeug \"angesteckt\" werden.\n\nEs kann angegeben werden, wieviele Phasen das angeschlossene Fahrzeug maximal nutzen kann.\n",
-		"env": []
-	},
-	{
-		"id": "10c935e7.d81c6a",
-		"type": "group",
-		"z": "92165c72.a5f948",
-		"name": "Ladepunkt 1",
-		"style": {
-			"label": true,
-			"stroke": "#0070c0",
-			"fill": "#0070c0",
-			"fill-opacity": "0.25"
-		},
-		"nodes": [
-			"a9947543.f34bd",
-			"9dad0a08.b2c0f",
-			"66502428.6bc2ec",
-			"4efd69fa.600b1",
-			"bcde68d8.fbde58",
-			"b4c0b8e7.95301",
-			"c2212cf2.e2bfe",
-			"bca07e3a.16ff08",
-			"c7894755.6c934",
-			"1c08d24.841d3ae",
-			"aa2ce19d.eaf1e8",
-			"5aa1d8c69080891b",
-			"e6650f13b3cc695a",
-			"ed32a789.f4f798",
-			"8c206019dae8c4f0",
-			"44f4fcadd171fe6d",
-			"1e68cfab.5aab5",
-			"3c77c4ed766b07a5"
-		],
-		"x": 14,
-		"y": 1144,
-		"w": 1152,
-		"h": 417
-	},
-	{
-		"id": "9924f98f.a9ee4",
-		"type": "group",
-		"z": "92165c72.a5f948",
-		"name": "PV 1",
-		"style": {
-			"stroke": "#92d04f",
-			"fill": "#92d04f",
-			"fill-opacity": "0.25",
-			"label": true
-		},
-		"nodes": [
-			"2ab22961.d73e06",
-			"8c9d0662.e0c83",
-			"83082d16.5c0c",
-			"c6745675.5b9ec",
-			"c98a2da7.d75a38",
-			"54fdb013.3028f8",
-			"f5a5cec3.4fd8a8",
-			"9605f30870c8aa1a",
-			"c44e5ea9.d6b06"
-		],
-		"x": 14,
-		"y": 511.5,
-		"w": 1072,
-		"h": 209.5
-	},
-	{
-		"id": "adca6b9d.7ef678",
-		"type": "group",
-		"z": "92165c72.a5f948",
-		"name": "Ladepunkt 3",
-		"style": {
-			"label": true,
-			"stroke": "#0070c0",
-			"fill": "#0070c0",
-			"fill-opacity": "0.25"
-		},
-		"nodes": [
-			"f63b330f.c096e",
-			"db2cd204.7325b8",
-			"bb9a80f3.6ed8d",
-			"d1f901d9.c7e1e8",
-			"1d7224a3.976403",
-			"7e5d3fc0.81f4f8",
-			"c08ace1e.18cd08",
-			"e25c1f48.8f5e18",
-			"6add9cf1.e85094",
-			"b2b4e4a9.e78cd8",
-			"1ef6368267acccec",
-			"ab6610e58dd3eb1c",
-			"b9d330a1.5a",
-			"711106cc.96ed18",
-			"0a303aeb4727c810",
-			"268be22f.974e1e",
-			"61501fd2e18b0ed9",
-			"2397a2d2e13d5c0a"
-		],
-		"x": 14,
-		"y": 2064,
-		"w": 1152,
-		"h": 417
-	},
-	{
-		"id": "ba86e05e.3eb518",
-		"type": "group",
-		"z": "92165c72.a5f948",
-		"name": "EVU",
-		"style": {
-			"stroke": "#ff0000",
-			"fill": "#ff0000",
-			"fill-opacity": "0.25",
-			"label": true
-		},
-		"nodes": [
-			"c5f91c31.79af98",
-			"2b5259d1.0e44ae",
-			"4c1c0dd1.be816c",
-			"fa5f56e0.4465e",
-			"90812723.7b3678",
-			"3e1bb28f.704a8e",
-			"f754ebac.d7d598",
-			"e854990fb4f9fab2",
-			"b46365f7d8aa13b6",
-			"524bd7697f7a306c",
-			"cde7317bc368b6b3",
-			"3036d462.5d789c",
-			"50edc6fb6d78740a",
-			"9145b76c44a9c929",
-			"3d8e2d3b4ee89e76",
-			"dc8f75f240dcf3b8",
-			"80ec81072842f306",
-			"7e693d583a244143"
-		],
-		"x": 14,
-		"y": 171.5,
-		"w": 1092,
-		"h": 289.5
-	},
-	{
-		"id": "c8376289.15bc1",
-		"type": "group",
-		"z": "92165c72.a5f948",
-		"name": "Speicher",
-		"style": {
-			"stroke": "#ffC000",
-			"fill": "#ffC000",
-			"fill-opacity": "0.25",
-			"label": true
-		},
-		"nodes": [
-			"9641b34b.2e9cd",
-			"145b387d.21aa88",
-			"dc7c97e6.6d6ad8",
-			"8243b679.c8f0f8",
-			"9ac3e1c9.e83e1",
-			"5deb68e4.79c458",
-			"96ea46e5.2b8618",
-			"ab178052.48bc98",
-			"a5a86b10.4dee38",
-			"d34c32d3.8f3448",
-			"6faaaef.e02a3d",
-			"bc6d74f3.8135d8",
-			"3df4fb4b.a9b13c",
-			"daf73f9a.fb50e",
-			"cf0bcd92.6fbe48",
-			"7a4711d4a689d6d4",
-			"234fd994.ef3106"
-		],
-		"x": 14,
-		"y": 764,
-		"w": 1092,
-		"h": 337
-	},
-	{
-		"id": "4ffeb8f2.88e97",
-		"type": "group",
-		"z": "92165c72.a5f948",
-		"name": "Ladepunkt 2",
-		"style": {
-			"label": true,
-			"stroke": "#0070c0",
-			"fill": "#0070c0",
-			"fill-opacity": "0.25"
-		},
-		"nodes": [
-			"9e477905.67cf68",
-			"30584a7c.88a996",
-			"ea8feee.389911",
-			"1b06aa0d.461b36",
-			"ce8b41fa.71b588",
-			"bd2575a0.0cbce",
-			"f1d863d5.a29c18",
-			"b5d70a0.77f3e78",
-			"73ffea7f.199e1c",
-			"f3d097a6.b80d18",
-			"89dc41d2.e8c018",
-			"266b0231.f4db36",
-			"4a41415e440b1304",
-			"0b69966b365c4536",
-			"43a92dd0.39da44",
-			"25f6934e60f9b4d6",
-			"5316d2315b34de5a",
-			"cbdca721f944522a"
-		],
-		"x": 14,
-		"y": 1604,
-		"w": 1152,
-		"h": 417
-	},
-	{
-		"id": "3e039a5092696f5f",
-		"type": "group",
-		"z": "92165c72.a5f948",
-		"name": "Allgemeine Nodes",
-		"style": {
-			"label": true
-		},
-		"nodes": [
-			"51d8d30d.b63194",
-			"fd94d24f.8eb11",
-			"f8fb4ebc3ad90445",
-			"529ef24e.47a72c",
-			"426f1381e1bed357"
-		],
-		"x": 14,
-		"y": 19,
-		"w": 1072,
-		"h": 142
 	},
 	{
 		"id": "a9947543.f34bd",
@@ -7102,106 +7274,177 @@
 		"wires": []
 	},
 	{
-		"id": "5c48b79a.d6b918",
-		"type": "mqtt-broker",
-		"name": "openWB-20",
-		"broker": "openwb2",
-		"port": "1883",
-		"clientid": "",
-		"autoConnect": true,
-		"usetls": false,
-		"compatmode": false,
-		"protocolVersion": "4",
-		"keepalive": "60",
-		"cleansession": true,
-		"birthTopic": "",
-		"birthQos": "0",
-		"birthPayload": "",
-		"birthMsg": {},
-		"closeTopic": "",
-		"closeQos": "0",
-		"closePayload": "",
-		"closeMsg": {},
-		"willTopic": "",
-		"willQos": "0",
-		"willPayload": "",
-		"willMsg": {},
-		"sessionExpiry": "",
-		"credentials": {}
+		"id": "ac0a42a5e9a6a1d8",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "50Hz",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/frequency",
+		"payload": "50",
+		"payloadType": "num",
+		"x": 110,
+		"y": 1340,
+		"wires": [
+			[
+				"dab0d3d1144c2cc4"
+			]
+		]
 	},
 	{
-		"id": "703fdeb2.7ab84",
-		"type": "ui_group",
-		"name": "Lp 1",
-		"tab": "940b8055.1139f",
-		"order": 4,
-		"disp": true,
-		"width": "6",
-		"collapse": true,
-		"className": ""
+		"id": "dab0d3d1144c2cc4",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "10c935e7.d81c6a",
+		"name": "LP1 Netzfrequenz",
+		"label": "Netzfrequenz",
+		"tooltip": "",
+		"group": "703fdeb2.7ab84",
+		"order": 9,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/frequency",
+		"topicType": "str",
+		"min": "40",
+		"max": "55",
+		"step": "0.1",
+		"className": "",
+		"x": 290,
+		"y": 1340,
+		"wires": [
+			[
+				"bca07e3a.16ff08"
+			]
+		]
 	},
 	{
-		"id": "77ebf297.439d3c",
-		"type": "ui_group",
-		"name": "Lp 3",
-		"tab": "940b8055.1139f",
-		"order": 6,
-		"disp": true,
-		"width": "6",
-		"collapse": false,
-		"className": ""
+		"id": "e648cfa22c2cd2ec",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "50Hz",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/frequency",
+		"payload": "50",
+		"payloadType": "num",
+		"x": 110,
+		"y": 1800,
+		"wires": [
+			[
+				"347e9bc401e0eddd"
+			]
+		]
 	},
 	{
-		"id": "9b18f281.ca979",
-		"type": "ui_group",
-		"name": "EVU Zähler",
-		"tab": "940b8055.1139f",
-		"order": 1,
-		"disp": true,
-		"width": "6",
-		"collapse": false,
-		"className": ""
+		"id": "347e9bc401e0eddd",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "4ffeb8f2.88e97",
+		"name": "LP2 Netzfrequenz",
+		"label": "Netzfrequenz",
+		"tooltip": "",
+		"group": "3fdb380f.aba898",
+		"order": 9,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/frequency",
+		"topicType": "str",
+		"min": "40",
+		"max": "55",
+		"step": "0.1",
+		"className": "",
+		"x": 270,
+		"y": 1800,
+		"wires": [
+			[
+				"bd2575a0.0cbce"
+			]
+		]
 	},
 	{
-		"id": "bda74558.0d74e8",
-		"type": "ui_group",
-		"name": "Speicher 1",
-		"tab": "940b8055.1139f",
-		"order": 3,
-		"disp": true,
-		"width": "6",
-		"collapse": false,
-		"className": ""
+		"id": "4ea0f783b9ca324e",
+		"type": "inject",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "50Hz",
+		"props": [
+			{
+				"p": "payload"
+			},
+			{
+				"p": "topic",
+				"vt": "str"
+			}
+		],
+		"repeat": "",
+		"crontab": "",
+		"once": true,
+		"onceDelay": "1",
+		"topic": "/frequency",
+		"payload": "50",
+		"payloadType": "num",
+		"x": 110,
+		"y": 2260,
+		"wires": [
+			[
+				"fd0bd4a773502e77"
+			]
+		]
 	},
 	{
-		"id": "1690fa25.a7c9a6",
-		"type": "ui_group",
-		"name": "PV 1",
-		"tab": "940b8055.1139f",
-		"order": 2,
-		"disp": true,
-		"width": "6",
-		"collapse": false,
-		"className": ""
-	},
-	{
-		"id": "3fdb380f.aba898",
-		"type": "ui_group",
-		"name": "Lp 2",
-		"tab": "940b8055.1139f",
-		"order": 5,
-		"disp": true,
-		"width": "6",
-		"collapse": false,
-		"className": ""
-	},
-	{
-		"id": "940b8055.1139f",
-		"type": "ui_tab",
-		"name": "Simulator 2.0",
-		"icon": "fa-car ",
-		"order": 1,
-		"disabled": false,
-		"hidden": false
+		"id": "fd0bd4a773502e77",
+		"type": "ui_slider",
+		"z": "92165c72.a5f948",
+		"g": "adca6b9d.7ef678",
+		"name": "LP3 Netzfrequenz",
+		"label": "Netzfrequenz",
+		"tooltip": "",
+		"group": "77ebf297.439d3c",
+		"order": 9,
+		"width": 0,
+		"height": 0,
+		"passthru": true,
+		"outs": "end",
+		"topic": "/frequency",
+		"topicType": "str",
+		"min": "40",
+		"max": "55",
+		"step": "0.1",
+		"className": "",
+		"x": 270,
+		"y": 2260,
+		"wires": [
+			[
+				"7e5d3fc0.81f4f8"
+			]
+		]
 	}
 ]
