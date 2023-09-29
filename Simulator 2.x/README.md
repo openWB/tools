@@ -3,6 +3,10 @@ Mit diesem Flow kann eine komplette virtuelle Umgebung für openWB bereitgestell
 Die Umgebung besteht aus einem Zähler (muss als "EVU" in der Hierarchie eingerichtet sein),
 einem PV-Modul, einem Batteriespeicher sowie drei Ladepunkten.
 
+Im Ordner "extended version" findet sich ein Ausbau des Simulators um komplexere Szenarien des Lastmangements nachzustellen bei denen auch EVU Kits verschachtelt werden können.
+
+Passend dazu findet sich dort auch eine Standalonconfig in dem eine entsprechende Struktur angelegt ist. Einzig die IP der Standalone ist im Simulator anschließend noch in Betrieb zu nehmen.
+
 ## Voraussetzungen
 - Node-Red (getestet bis 3.0.2)
 - node-red-contrib-interval-length
