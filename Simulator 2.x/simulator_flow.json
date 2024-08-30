@@ -4620,7 +4620,7 @@
 		"g": "3e039a5092696f5f",
 		"name": "",
 		"topic": "",
-		"qos": "2",
+		"qos": "0",
 		"retain": "true",
 		"respTopic": "",
 		"contentType": "",
