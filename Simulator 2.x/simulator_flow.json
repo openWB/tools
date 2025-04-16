@@ -1137,7 +1137,7 @@
         "type": "function",
         "z": "2dd5cf5c.4ae26",
         "name": "Map to Power Range",
-        "func": "const range = flow.get(\"maxPower\");\nconst dynamicPower = flow.get(\"dynamicMaxPower\");\nconst actualCapacity = flow.get(\"actualCapacity\");\nconst maxCapacity = flow.get(\"maxCapacity\");\n\nmsg.payload = msg.payload * (2*range) - range;\nif( actualCapacity == 0 ){\n    msg.payload = Math.max(msg.payload,0);\n} else if( actualCapacity == maxCapacity ){\n    msg.payload = Math.min(msg.payload,0);\n}\nif( dynamicPower != null ){\n    msg.payload = Math.min(msg.payload, dynamicPower);\n}\nreturn msg;",
+        "func": "const range = flow.get(\"maxPower\");\nconst dynamicPower = flow.get(\"dynamicMaxPower\");\nconst actualCapacity = flow.get(\"actualCapacity\");\nconst maxCapacity = flow.get(\"maxCapacity\");\n\nmsg.payload = msg.payload * (2*range) - range;\nif( actualCapacity == 0 ){\n    msg.payload = Math.max(msg.payload,0);\n} else if( actualCapacity == maxCapacity ){\n    msg.payload = Math.min(msg.payload,0);\n}\nif( dynamicPower != null ){\n    if (Math.abs(msg.payload) > dynamicPower) {\n        msg.payload = dynamicPower;\n    }\n}\nreturn msg;",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
