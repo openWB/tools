@@ -997,8 +997,8 @@
                 "t": "set",
                 "p": "dynamicMaxPower",
                 "pt": "flow",
-                "to": "3300",
-                "tot": "num"
+                "to": "null",
+                "tot": "jsonata"
             },
             {
                 "t": "set",
