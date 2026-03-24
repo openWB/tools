@@ -7630,17 +7630,5 @@
         "order": 1,
         "disabled": false,
         "hidden": false
-    },
-    {
-        "id": "55a568a139648fbd",
-        "type": "global-config",
-        "env": [],
-        "modules": {
-            "node-red-node-smooth": "0.1.2",
-            "node-red-node-random": "0.4.1",
-            "node-red-contrib-interval-length": "0.0.6",
-            "node-red-contrib-pid": "1.1.7",
-            "node-red-dashboard": "3.2.3"
-        }
     }
 ]
