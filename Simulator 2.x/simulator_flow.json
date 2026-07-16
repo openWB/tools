@@ -8562,7 +8562,7 @@
         "label": "kW",
         "format": "{{value/1000 | number:2}}",
         "min": 0,
-        "max": "-20000",
+        "max": "-10000",
         "colors": [
             "#00b500",
             "#00ff00",
@@ -11213,7 +11213,7 @@
         ]
     },
     {
-        "id": "bd9ff5503734ec08",
+        "id": "9beb9299d150406b",
         "type": "global-config",
         "env": [],
         "modules": {
