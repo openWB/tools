@@ -406,7 +406,7 @@
     {
         "id": "052d304dc9163933",
         "type": "subflow",
-        "name": "Verbraucher mit Leistungsvorgabe",
+        "name": "Sub Verbraucher mit Leistungsvorgabe",
         "info": "",
         "category": "",
         "in": [
@@ -478,17 +478,43 @@
             {
                 "name": "Component-ID",
                 "type": "num",
-                "value": ""
+                "value": "",
+                "ui": {
+                    "icon": "font-awesome/fa-hashtag",
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "num"
+                        ]
+                    }
+                }
             },
             {
                 "name": "max Phases",
                 "type": "num",
-                "value": "1"
+                "value": "1",
+                "ui": {
+                    "icon": "font-awesome/fa-list-ol",
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "num"
+                        ]
+                    }
+                }
             },
             {
                 "name": "Verbraucher-ID",
-                "type": "str",
-                "value": ""
+                "type": "num",
+                "value": "",
+                "ui": {
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "num"
+                        ]
+                    }
+                }
             }
         ],
         "meta": {},
@@ -516,7 +542,7 @@
     {
         "id": "a9e11c55be21f50a",
         "type": "subflow",
-        "name": "schaltbarer Verbraucher",
+        "name": "Sub schaltbarer Verbraucher",
         "info": "",
         "category": "",
         "in": [
@@ -587,18 +613,44 @@
         "env": [
             {
                 "name": "Component-ID",
-                "type": "str",
-                "value": ""
+                "type": "num",
+                "value": "",
+                "ui": {
+                    "icon": "font-awesome/fa-hashtag",
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "num"
+                        ]
+                    }
+                }
             },
             {
                 "name": "max Phases",
-                "type": "str",
-                "value": "1"
+                "type": "num",
+                "value": "1",
+                "ui": {
+                    "icon": "font-awesome/fa-list-ol",
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "num"
+                        ]
+                    }
+                }
             },
             {
                 "name": "Verbraucher-ID",
-                "type": "str",
-                "value": ""
+                "type": "num",
+                "value": "",
+                "ui": {
+                    "type": "input",
+                    "opts": {
+                        "types": [
+                            "num"
+                        ]
+                    }
+                }
             }
         ],
         "meta": {},
@@ -861,8 +913,8 @@
         "name": "Verbraucher 6",
         "style": {
             "label": true,
-            "stroke": "#0070c0",
-            "fill": "#0070c0",
+            "stroke": "#6f2fa0",
+            "fill": "#6f2fa0",
             "fill-opacity": "0.25"
         },
         "nodes": [
@@ -894,8 +946,8 @@
         "name": "Verbraucher 7",
         "style": {
             "label": true,
-            "stroke": "#0070c0",
-            "fill": "#0070c0",
+            "stroke": "#6f2fa0",
+            "fill": "#6f2fa0",
             "fill-opacity": "0.25"
         },
         "nodes": [
@@ -1024,7 +1076,7 @@
         "type": "mqtt-broker",
         "name": "openWB-20",
         "broker": "localhost",
-        "port": "1883",
+        "port": "1886",
         "clientid": "node-red-simulator",
         "autoConnect": true,
         "usetls": false,
@@ -10566,7 +10618,7 @@
             {
                 "name": "Verbraucher-ID",
                 "value": "4",
-                "type": "str"
+                "type": "num"
             }
         ],
         "x": 590,
@@ -10944,12 +10996,12 @@
             {
                 "name": "Component-ID",
                 "value": "7",
-                "type": "str"
+                "type": "num"
             },
             {
                 "name": "Verbraucher-ID",
                 "value": "5",
-                "type": "str"
+                "type": "num"
             }
         ],
         "x": 540,
@@ -11217,11 +11269,11 @@
         "type": "global-config",
         "env": [],
         "modules": {
-            "node-red-dashboard": "3.2.3",
+            "node-red-dashboard": "3.6.6",
             "node-red-node-smooth": "0.1.2",
             "node-red-node-random": "0.4.1",
             "node-red-contrib-interval-length": "0.0.6",
-            "node-red-contrib-pid": "1.1.7"
+            "node-red-contrib-pid": "2.0.0"
         }
     }
 ]
