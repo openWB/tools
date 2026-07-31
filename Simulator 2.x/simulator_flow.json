@@ -708,7 +708,7 @@
         "id": "2730ecd824732aa1",
         "type": "group",
         "z": "495e528e779f668f",
-        "name": "PV 1",
+        "name": "WR 1",
         "style": {
             "stroke": "#92d04f",
             "fill": "#92d04f",
@@ -1391,7 +1391,7 @@
         "type": "function",
         "z": "c5821ca1.ee2da",
         "name": "Senden der Flow-Daten",
-        "func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"InverterPower\").toFixed(0));\n\nvar statusColor = \"green\";\nvar statusShape = \"dot\";\nif(actualPower > -100)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n    text: (flow.get(\"pv\")/1000).toFixed(1)+\"kW\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/mqtt/pv/\" + ComponentId + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/mqtt/pv/\" + ComponentId + \"/get/exported\",\n            payload: parseInt(flow.get(\"PV_Zähler\").toFixed(0))\n        }\n    ]\n]",
+        "func": "const ComponentId = env.get(\"Component-ID\");\n\nconst actualPower = parseInt(flow.get(\"InverterPower\").toFixed(0));\n\nvar statusColor = \"green\";\nvar statusShape = \"dot\";\nif(actualPower > -100)\n    statusColor= \"red\";\n\nnode.status({\n        fill: statusColor,\n        shape: statusShape,\n    text: \"PV \"+(flow.get(\"pv\")/1000).toFixed(1)+\"kW\"\n    });\n\nreturn [\n    [\n        {\n            topic: \"openWB/set/mqtt/pv/\" + ComponentId + \"/get/power\",\n            payload: actualPower\n        },\n        {\n            topic: \"openWB/set/mqtt/pv/\" + ComponentId + \"/get/exported\",\n            payload: parseInt(flow.get(\"PV_Zähler\").toFixed(0))\n        }\n    ]\n]",
         "outputs": 1,
         "timeout": "",
         "noerr": 0,
@@ -1724,7 +1724,7 @@
         "type": "function",
         "z": "c5821ca1.ee2da",
         "name": "hybrid",
-        "func": "if (flow.get(\"hybrid\") == true)\n    msg.payload -= flow.get(\"bat_power\");\nif (msg.payload > 20000)\n    msg.payload = 20000;\nreturn msg;",
+        "func": "if (flow.get(\"hybrid\") == true)\n    msg.payload -= flow.get(\"bat_power\");\nif (msg.payload > 5000)\n    msg.payload = 5000;\nreturn msg;",
         "outputs": 1,
         "timeout": 0,
         "noerr": 0,
@@ -8654,7 +8654,7 @@
         "z": "495e528e779f668f",
         "g": "2730ecd824732aa1",
         "name": "",
-        "label": "PV-Leistung",
+        "label": "WR-Leistung",
         "tooltip": "",
         "group": "1690fa25.a7c9a6",
         "order": 2,
@@ -8725,11 +8725,12 @@
         "order": 3,
         "width": 0,
         "height": 0,
-        "name": "PV Zähler",
+        "name": "WR Zähler",
         "label": "Zählerstand",
         "format": "{{value/1000 | number:3}} kWh",
         "layout": "row-spread",
-        "x": 960,
+        "className": "",
+        "x": 970,
         "y": 880,
         "wires": []
     },
@@ -8738,7 +8739,7 @@
         "type": "ui_gauge",
         "z": "495e528e779f668f",
         "g": "2730ecd824732aa1",
-        "name": "PV Leistung",
+        "name": "WR Leistung",
         "group": "1690fa25.a7c9a6",
         "order": 4,
         "width": 0,
@@ -8766,9 +8767,9 @@
         "type": "subflow:c5821ca1.ee2da",
         "z": "495e528e779f668f",
         "g": "2730ecd824732aa1",
-        "name": "PV 1",
+        "name": "Wechselrichter 1",
         "env": [],
-        "x": 590,
+        "x": 630,
         "y": 800,
         "wires": [
             [
@@ -11404,7 +11405,7 @@
         "z": "495e528e779f668f",
         "g": "2730ecd824732aa1",
         "name": "",
-        "label": "Hybrid",
+        "label": "Hybrid (max 5kW Out)",
         "tooltip": "",
         "group": "1690fa25.a7c9a6",
         "order": 3,
@@ -11425,7 +11426,7 @@
         "offcolor": "",
         "animate": false,
         "className": "",
-        "x": 370,
+        "x": 420,
         "y": 860,
         "wires": [
             [
@@ -11460,7 +11461,7 @@
         ]
     },
     {
-        "id": "9d5cb12dbaa082f2",
+        "id": "8d8ebabb2563b622",
         "type": "global-config",
         "env": [],
         "modules": {
