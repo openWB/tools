@@ -975,7 +975,7 @@
         "h": 342
     },
     {
-        "id": "23011dd18e090963",
+        "id": "8599bf06a5ac073f",
         "type": "ui_base",
         "theme": {
             "name": "theme-light",
@@ -1196,6 +1196,11 @@
         "width": 6,
         "collapse": false,
         "className": ""
+    },
+    {
+        "id": "9beb9299d150406b",
+        "type": "global-config",
+        "env": []
     },
     {
         "id": "180041c4.08fc2e",
@@ -5492,7 +5497,7 @@
                 "t": "set",
                 "p": "Consumer_Soll_Leistung",
                 "pt": "flow",
-                "to": "$number(payload)",
+                "to": "$round($number(payload), 3)",
                 "tot": "jsonata"
             }
         ],
@@ -8614,7 +8619,7 @@
         "label": "kW",
         "format": "{{value/1000 | number:2}}",
         "min": 0,
-        "max": "-10000",
+        "max": "-20000",
         "colors": [
             "#00b500",
             "#00ff00",
@@ -8622,6 +8627,7 @@
         ],
         "seg1": "",
         "seg2": "",
+        "diff": false,
         "className": "",
         "x": 970,
         "y": 920,
@@ -11263,17 +11269,5 @@
                 "1d10f97883bb139a"
             ]
         ]
-    },
-    {
-        "id": "9beb9299d150406b",
-        "type": "global-config",
-        "env": [],
-        "modules": {
-            "node-red-dashboard": "3.6.6",
-            "node-red-node-smooth": "0.1.2",
-            "node-red-node-random": "0.4.1",
-            "node-red-contrib-interval-length": "0.0.6",
-            "node-red-contrib-pid": "2.0.0"
-        }
     }
 ]
