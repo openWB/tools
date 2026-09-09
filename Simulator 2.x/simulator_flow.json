@@ -594,7 +594,7 @@
                         "port": 0
                     },
                     {
-                        "id": "ae26d392516f613a",
+                        "id": "056221a523f5b527",
                         "port": 0
                     }
                 ]
@@ -975,7 +975,7 @@
         "h": 342
     },
     {
-        "id": "8599bf06a5ac073f",
+        "id": "23011dd18e090963",
         "type": "ui_base",
         "theme": {
             "name": "theme-light",
@@ -1196,11 +1196,6 @@
         "width": 6,
         "collapse": false,
         "className": ""
-    },
-    {
-        "id": "9beb9299d150406b",
-        "type": "global-config",
-        "env": []
     },
     {
         "id": "180041c4.08fc2e",
@@ -6361,9 +6356,7 @@
         "x": 850,
         "y": 240,
         "wires": [
-            [
-                "ae26d392516f613a"
-            ]
+            []
         ]
     },
     {
@@ -6883,7 +6876,7 @@
                 "t": "set",
                 "p": "Consumer_Min_Current",
                 "pt": "flow",
-                "to": "5",
+                "to": "1",
                 "tot": "num"
             },
             {
@@ -7159,7 +7152,7 @@
         "rules": [
             {
                 "t": "set",
-                "p": "Consumer_Min_current",
+                "p": "Consumer_Min_Current",
                 "pt": "flow",
                 "to": "payload",
                 "tot": "msg"
@@ -7182,6 +7175,13 @@
         "z": "a9e11c55be21f50a",
         "name": "",
         "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "Consumer_Leistung",
+                "tot": "flow"
+            },
             {
                 "t": "set",
                 "p": "topic",
@@ -7262,24 +7262,6 @@
             [
                 "419dcd8e89054a4a"
             ]
-        ]
-    },
-    {
-        "id": "ae26d392516f613a",
-        "type": "function",
-        "z": "a9e11c55be21f50a",
-        "name": "function 1",
-        "func": "node.warn(flow.get(\"Consumer_Schaltzustand\"));\nreturn msg;",
-        "outputs": 1,
-        "timeout": 0,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "libs": [],
-        "x": 1120,
-        "y": 220,
-        "wires": [
-            []
         ]
     },
     {
@@ -8627,7 +8609,6 @@
         ],
         "seg1": "",
         "seg2": "",
-        "diff": false,
         "className": "",
         "x": 970,
         "y": 920,
@@ -11269,5 +11250,17 @@
                 "1d10f97883bb139a"
             ]
         ]
+    },
+    {
+        "id": "f2d31844fa4926c0",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "node-red-dashboard": "3.2.3",
+            "node-red-node-smooth": "0.1.2",
+            "node-red-node-random": "0.4.1",
+            "node-red-contrib-interval-length": "0.0.6",
+            "node-red-contrib-pid": "1.1.7"
+        }
     }
 ]
